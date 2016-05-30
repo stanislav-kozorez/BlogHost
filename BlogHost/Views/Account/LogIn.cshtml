@@ -1,0 +1,14 @@
+﻿@model BlogHost.Models.LoginViewModel
+
+<div>
+    <h2>Log in Page</h2>
+    @using (Html.BeginForm("LogIn", "Account"))
+    {
+        @Html.TextBoxFor(x => x.Email, new { placeholder = "Email"})
+        <br />
+        @Html.PasswordFor(x => x.Password, new { placeholder = "Password" })
+        <input type="submit" value="Log In" />
+    }
+    @Html.ActionLink("Sign Up", "Registration", "Account")
+</div>
+

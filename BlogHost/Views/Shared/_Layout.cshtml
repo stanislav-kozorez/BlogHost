@@ -1,0 +1,37 @@
+﻿@{
+    ViewBag.UserName = "John";
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width" />
+    <title>@ViewBag.Title</title>
+    @Styles.Render("~/Content/css")
+    @*@Scripts.Render("~/bundles/modernizr")*@
+</head>
+<body>
+    <div>
+        @Html.ActionLink("BlogHost Application", "Index", "Home")
+        @Html.ActionLink("My Profile", "Index", "Home")
+        @Html.ActionLink("Articles", "Index", "Articles")
+        @if (User.Identity.IsAuthenticated)
+        {
+            @: Hello, @ViewBag.UserName!
+        @Html.ActionLink("Log out", "Logout", "Account")
+        }
+        else
+        {
+            @: Hello, @ViewBag.UserName!
+            @Html.ActionLink("Log in", "Login", "Account")
+            @Html.ActionLink("Sign up", "Registration", "Account")
+        }
+    </div>
+    @RenderBody()
+    <footer>
+        <p>&copy; @DateTime.Now.Year - BlogHost Application</p>
+    </footer>
+    @Scripts.Render("~/bundles/jquery")
+    @*@RenderSection("scripts", required: false)*@
+</body>
+</html>

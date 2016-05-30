@@ -1,0 +1,17 @@
+﻿@model BlogHost.Models.RegistrationViewModel
+
+@{ 
+    ViewBag.Title = "Register new account";
+}
+
+<div>
+    <h2>Fill in this form to create an account</h2>
+    @using (Html.BeginForm("Registration", "Account"))
+    {
+        @Html.TextBoxFor(x => x.Name, new { placeholder = "Enter your name" })
+        @Html.TextBoxFor(x => x.Email, new { placeholder = "Enter your Email" })
+        @Html.TextBoxFor(x => x.Password, new { placeholder = "Password" })
+        @Html.TextBoxFor(x => x.RepeatPassword, new { placeholder = "Repeat password" })
+        <input type="submit" value="Register me" />
+    }
+</div>
