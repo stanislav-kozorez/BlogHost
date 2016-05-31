@@ -1,7 +1,4 @@
-﻿@{
-    ViewBag.UserName = "John";
-}
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html>
 <head>
     <meta charset="utf-8" />
@@ -17,12 +14,11 @@
         @Html.ActionLink("Articles", "Index", "Articles")
         @if (User.Identity.IsAuthenticated)
         {
-            @: Hello, @ViewBag.UserName!
+            @: Hello, @User.Identity.Name!
         @Html.ActionLink("Log out", "Logout", "Account")
         }
         else
         {
-            @: Hello, @ViewBag.UserName!
             @Html.ActionLink("Log in", "Login", "Account")
             @Html.ActionLink("Sign up", "Registration", "Account")
         }
