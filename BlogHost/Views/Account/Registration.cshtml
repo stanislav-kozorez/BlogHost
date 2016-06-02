@@ -4,14 +4,33 @@
     ViewBag.Title = "Register new account";
 }
 
-<div>
-    <h2>Fill in this form to create an account</h2>
-    @using (Html.BeginForm("Registration", "Account"))
-    {
-        @Html.TextBoxFor(x => x.Name, new { placeholder = "Enter your name" })
-        @Html.TextBoxFor(x => x.Email, new { placeholder = "Enter your Email" })
-        @Html.TextBoxFor(x => x.Password, new { placeholder = "Password" })
-        @Html.TextBoxFor(x => x.RepeatPassword, new { placeholder = "Repeat password" })
-        <input type="submit" value="Register me" />
-    }
+<div class="row">
+    <div class="col-md-4 col-md-offset-4 bordered">
+        @using (Html.BeginForm("Registration", "Account", FormMethod.Post, new { role = "form" }))
+        {
+            <div class="text-center">
+                <a href="@Url.Action("Index", "Home")"><img src="~/Content/Images/logo.png"></a>
+            </div>
+            <h2 class="text-center">Fill in this form to create an account</h2>
+            <div class="form-group">
+                @Html.TextBoxFor(x => x.Name, new { placeholder = "Enter your name", @class = "form-control" })
+            </div>
+            <div class="form-group">
+                @Html.TextBoxFor(x => x.Email, new { placeholder = "Enter your Email", @class = "form-control", type = "email" })
+            </div>
+            <div class="form-group">
+                @Html.TextBoxFor(x => x.Password, new { placeholder = "Password", @class = "form-control", type = "password" })
+            </div>
+            <div class="form-group">
+                @Html.TextBoxFor(x => x.RepeatPassword, new { placeholder = "Repeat password", @class = "form-control", type = "password" })
+            </div>
+            <button class="btn btn-block btn-success" type="submit">Register me</button>
+        }
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-4 col-md-offset-4 bordered">
+        <h3 class="text-center">Allready have an account?</h3>
+        <h4 class="text-center">@Html.ActionLink("Login", "LogIn")</h4>
+    </div>
 </div>

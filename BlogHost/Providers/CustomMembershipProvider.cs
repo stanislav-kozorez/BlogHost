@@ -64,13 +64,6 @@ namespace BlogHost.Providers
                 user.Name = regViewModel.Name;
 
                 var role = context.Roles.FirstOrDefault(x => x.Name == "User");
-                if (role == null)
-                {
-                    role = new Role();
-                    role.Name = "User";
-                    context.Roles.Add(role);
-                }
-
                 user.Role = role;
 
                 context.Users.Add(user);
@@ -99,8 +92,8 @@ namespace BlogHost.Providers
             using (var context = new BlogHostDbContext())
             {
                 var user = context.Users.Where(x => x.Email == email).FirstOrDefault();
-                return (user != null) ? new MembershipUser("CustomMembershipProvider", user.Email,
-                    null, null, null, null,
+                return (user != null) ? new MembershipUser("CustomMembershipProvider", user.Name,
+                    null, user.Email, null, null,
                     false, false, user.CreationDate,
                     DateTime.MinValue, DateTime.MinValue,
                     DateTime.MinValue, DateTime.MinValue) : null;

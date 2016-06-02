@@ -1,7 +1,11 @@
 ﻿@{ 
     ViewBag.Title = "Registration result";
 }
-<div>
-    <h2>Registration succeed</h2>
-    <p>Thank you, @ViewBag.Name for registration. Now you have your own @Html.ActionLink("account", "Index", "Account") and ability to create different articles.</p>
+
+<div class="row">
+    <div class="col-md-4 col-md-offset-4 bordered text-center">
+        <a href="@Url.Action("Index", "Home")"><img src="~/Content/Images/logo.png"></a>
+        <h2>Registration succeed</h2>
+        <p class="lead">Thank you, @Session["username"] for registration. Now you have your own @Html.ActionLink("account", "Index", "Account") and ability to @Html.ActionLink("create", "Create", "Article") different articles.</p>
+    </div>
 </div>

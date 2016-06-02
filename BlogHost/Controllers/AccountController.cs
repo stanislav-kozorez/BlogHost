@@ -9,6 +9,7 @@ using System.Web.Security;
 
 namespace BlogHost.Controllers
 {
+    [AllowAnonymous]
     public class AccountController : Controller
     {
         // GET: Account
@@ -20,6 +21,8 @@ namespace BlogHost.Controllers
         [HttpGet]
         public ActionResult LogIn()
         {
+            if (User.Identity.IsAuthenticated)
+                return RedirectToAction("Index");
             return View();
         }
 
@@ -31,6 +34,8 @@ namespace BlogHost.Controllers
                 if (Membership.ValidateUser(user.Email, user.Password))
                 {
                     FormsAuthentication.SetAuthCookie(user.Email, false);
+                    var username = Membership.GetUser(user.Email).UserName;
+                    Session.Add("username", username);
                     //if (Url.IsLocalUrl(returnUrl))
                     ///{
                     //     return Redirect(returnUrl);
@@ -51,20 +56,23 @@ namespace BlogHost.Controllers
         [HttpGet]
         public ActionResult Registration()
         {
+            if (User.Identity.IsAuthenticated)
+                return RedirectToAction("Index");
             return View();
         }
 
         [HttpPost]
         public ActionResult Registration(RegistrationViewModel user)
         {
+
             if (ModelState.IsValid)
             {
                 MembershipUser membershipUser = ((CustomMembershipProvider)Membership.Provider).CreateUser(user);
-
                 if (membershipUser != null)
                 {
                     FormsAuthentication.SetAuthCookie(user.Email, false);
-                    return RedirectToAction("Index", "Home");
+                    Session.Add("username", membershipUser.UserName);
+                    return View("Success");
                 }
                 else
                 {
@@ -74,7 +82,7 @@ namespace BlogHost.Controllers
             return View(user);
         }
 
-        public ActionResult LogOff()
+        public ActionResult LogOut()
         {
             FormsAuthentication.SignOut();
 

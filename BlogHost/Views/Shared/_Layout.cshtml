@@ -4,30 +4,56 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width" />
     <title>@ViewBag.Title</title>
+    @Styles.Render("~/Content/bootstrap")
+    @Scripts.Render("~/bundles/modernizr")
     @Styles.Render("~/Content/css")
-    @*@Scripts.Render("~/bundles/modernizr")*@
 </head>
 <body>
-    <div>
-        @Html.ActionLink("BlogHost Application", "Index", "Home")
-        @Html.ActionLink("My Profile", "Index", "Home")
-        @Html.ActionLink("Articles", "Index", "Articles")
-        @if (User.Identity.IsAuthenticated)
-        {
-            @: Hello, @User.Identity.Name!
-        @Html.ActionLink("Log out", "Logout", "Account")
-        }
-        else
-        {
-            @Html.ActionLink("Log in", "Login", "Account")
-            @Html.ActionLink("Sign up", "Registration", "Account")
-        }
+    <nav class="navbar navbar-inverse">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <a href="@Url.Action("Index", "Home")" class="navbar-brand no-padding"><img src="~/Content/Images/logo.png"/>BlogHost Application</a>
+                @*@Html.ActionLink("BlogHost Application", "Index", "Home", new { @class = "navbar-brand" } )*@
+            </div>
+            <ul class="nav navbar-nav">
+                <li>@Html.ActionLink("My Profile", "Index", "Home", new { @class = "active"})</li>
+                <li>@Html.ActionLink("Articles", "Index", "Articles")</li>
+            </ul>
+            <ul class="nav navbar-nav navbar-right">
+                @if (User.Identity.IsAuthenticated)
+                {
+                    if (Session["username"] == null)
+                    {
+                        Session["username"] = Membership.GetUser(User.Identity.Name).UserName;
+                    }
+                    <p class="navbar-text">Hello, @Session["username"]!</p>
+                    @CreateAccountNavigation("Log out", "LogOut", "Account", "glyphicon glyphicon-log-out")
+                }
+                else
+                {
+                    @CreateAccountNavigation("Log in", "LogIn", "Account", "glyphicon glyphicon-log-in")
+                    @CreateAccountNavigation("Sign up", "Registration", "Account", "glyphicon glyphicon-user")                    
+                }
+            </ul>
+        </div>
+    </nav>
+    <div class="container">
+        @RenderBody()
     </div>
-    @RenderBody()
     <footer>
-        <p>&copy; @DateTime.Now.Year - BlogHost Application</p>
+        <div class="container">
+            <p class="text-center">&copy; @DateTime.Now.Year - BlogHost Application</p>
+        </div>
     </footer>
     @Scripts.Render("~/bundles/jquery")
-    @*@RenderSection("scripts", required: false)*@
+    @Scripts.Render("~/bundles/bootstrap")
+    @RenderSection("scripts", required: false)
 </body>
 </html>
+
+@helper CreateAccountNavigation(string text, string action, string controller, string elementClass)
+{
+    <li>
+        <a href=/@controller/@action><span class="@elementClass"></span> @text</a>
+    </li>
+}
