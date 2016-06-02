@@ -44,3 +44,11 @@ footer p {
 .bordered img {
     height: 100px;
 }
+
+.field-validation-error {
+    color: #f00;
+}
+
+.input-validation-error {
+    background-color: #fee;
+}
