@@ -15,12 +15,10 @@
             <div class="form-group">
                 @Html.ValidationMessageFor(x => x.Email)
                 @Html.TextBoxFor(x => x.Email, new { type = "email", placeholder = "Email", @class = "form-control" })
-                @*<input type="email" class="form-control" placeholder="Email">*@
             </div>
             <div class="form-group">
                 @Html.ValidationMessageFor(x => x.Password)
                 @Html.TextBoxFor(x => x.Password, new { type = "password", placeholder = "Password", @class = "form-control"})
-                @*<input type="password" class="form-control" placeholder="Password">*@
             </div>
             <button class="btn btn-block btn-success" type="submit">Log in</button>
         }

@@ -1,0 +1,42 @@
+﻿@model List<ORM.Entity.User>
+@{
+    ViewBag.Title = "List of users";
+}
+<div class="bordered">
+    <h2 class="text-center">User management</h2>
+    @if (Model.Count == 1)
+    {
+        <p class="lead">There are no users yet.</p>
+    }
+    else
+    {
+        <table class="table table-hover table-bordered">
+            <thead>
+                <tr>
+                    <th align="center">Name</th>
+                    <th>Email</th>
+                    <th>Creation Date</th>
+                    <th>Role</th>
+                    <th colspan="2">Management</th>
+                </tr>
+            </thead>
+            <tbody>
+            @foreach (var item in Model)
+            {
+                if (HttpContext.Current.User.IsInRole(item.Role.Name) && item.Email == HttpContext.Current.User.Identity.Name)
+                {
+                    continue;
+                }
+                <tr>
+                    <td>@Html.DisplayFor(x => item.Name)</td>
+                    <td>@Html.DisplayFor(x => item.Email)</td>
+                    <td>@Html.DisplayFor(x => item.CreationDate)</td>
+                    <td>@Html.DisplayFor(x => item.Role.Name)</td>
+                    <td>@Html.ActionLink("Edit", "Edit", "User", new { id = item.UserId }, new { @class = "btn btn-success btn-block" })</td>
+                    <td>@Html.ActionLink("Delete", "Delete", "User", new { id = item.UserId }, new { @class = "btn btn-danger btn-block" })</td>
+                </tr>
+            }
+            </tbody>
+        </table>
+    }
+</div>

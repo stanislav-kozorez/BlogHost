@@ -52,3 +52,7 @@ footer p {
 .input-validation-error {
     background-color: #fee;
 }
+
+table{
+    background-color: #fbfbfb;
+}
