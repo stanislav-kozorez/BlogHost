@@ -29,9 +29,6 @@ footer p {
     line-height: 60px;
 }
 
-/*.navbar-brand {
-  padding: 0px;
-}*/
 .navbar-brand>img {
   height: 50px;
   display:inline;
@@ -41,9 +38,9 @@ footer p {
     padding: 0 0 0 15px;
 }
 
-.bordered img {
+/*.bordered img {
     height: 100px;
-}
+}*/
 
 .field-validation-error {
     color: #f00;
@@ -55,4 +52,12 @@ footer p {
 
 table{
     background-color: #fbfbfb;
+}
+
+.logo{
+    width: 100px;
+}
+
+.avatar {
+    width: 100%;
 }

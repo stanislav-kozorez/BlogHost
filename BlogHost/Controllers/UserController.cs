@@ -30,7 +30,7 @@ namespace BlogHost.Controllers
             using (var context = new BlogHostDbContext())
             {
                 var ormUser = context.Users.Find(id);
-                if(ormUser != null)
+                if (ormUser != null)
                 {
                     var editUser = new UserEditViewModel();
                     editUser.UserId = ormUser.UserId;
@@ -38,7 +38,7 @@ namespace BlogHost.Controllers
                     editUser.Email = ormUser.Email;
                     editUser.RoleId = ormUser.Role.RoleId;
                     editUser.Roles = new SelectList(context.Roles.ToList(), "RoleId", "Name");
-                   
+
                     //ViewBag.Roles = new SelectList(context.Roles.ToList(), "RoleId", "Name", ormUser.Role.RoleId);
 
                     //ViewBag.Roles = context.Roles.ToList().Select(x => new SelectListItem() {Text = x.Name, Value = x.RoleId.ToString(), Selected = x.RoleId == ormUser.Role.RoleId });
@@ -68,6 +68,35 @@ namespace BlogHost.Controllers
                 }
             }
             return View(editUser);
+        }
+
+        [ActionName("Delete")]
+        public ActionResult ConfirmUserDelete(int id)
+        {
+            using (var context = new BlogHostDbContext())
+            {
+                var ormUser = context.Users.Find(id);
+                if (ormUser != null)
+                {
+                    var deleteUser = new UserDeleteViewModel() { Email = ormUser.Email, UserId = ormUser.UserId };
+                    return View(deleteUser);
+                }
+
+            }
+            return RedirectToAction("Index");
+        }
+
+        [HttpPost]
+        public ActionResult Delete(int userId)
+        {
+            using (var context = new BlogHostDbContext())
+            {
+                var user = context.Users.Find(userId);
+                if (user != null)
+                    context.Users.Remove(user);
+                context.SaveChanges();
+                return RedirectToAction("Index");
+            }
         }
     }
 }

@@ -7,10 +7,9 @@
     <div class="col-md-4 col-md-offset-4 bordered">
         @using (Html.BeginForm("Edit", "User", FormMethod.Post, new { role = "form" }))
         {
-            @*@Html.AntiForgeryToken()*@
             @Html.HiddenFor(x => x.UserId)
             <div class="text-center">
-                <a href="@Url.Action("Index", "Home")"><img src="~/Content/Images/logo.png"></a>
+                <a href="@Url.Action("Index", "Home")"><img class="logo" src="~/Content/Images/logo.png"></a>
             </div>
             <h2 class="text-center">Edit @Model.Name's data</h2>
             <div class="form-group">
