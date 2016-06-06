@@ -38,10 +38,6 @@ footer p {
     padding: 0 0 0 15px;
 }
 
-/*.bordered img {
-    height: 100px;
-}*/
-
 .field-validation-error {
     color: #f00;
 }
@@ -60,4 +56,15 @@ table{
 
 .avatar {
     width: 100%;
+}
+
+.dark-background{
+    background-color:#bab9b9;
+    border-radius: 5px;
+    padding: 0 15px;
+    line-height: 65px;
+}
+
+.list-inline > li {
+    padding: 0;
 }
