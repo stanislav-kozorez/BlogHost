@@ -1,5 +1,6 @@
 ﻿using BlogHost.Models;
 using BlogHost.Providers;
+using ORM;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,9 +13,33 @@ namespace BlogHost.Controllers
     [AllowAnonymous]
     public class AccountController : Controller
     {
-        public ActionResult Index()
+        public ActionResult Index(int? id)
         {
-            return View();
+            ViewBag.RequestedId = id;
+            string email = null;
+            if (id == null && User.Identity.IsAuthenticated)
+            {
+                email = User.Identity.Name;
+                using (var context = new BlogHostDbContext())
+                {
+                    var user = context.Users.Include("Role").Where(x => x.Email == email).FirstOrDefault();
+                    if (user != null)
+                        return View(user);
+                    return RedirectToAction("Login");
+                }
+            }
+            else
+            {
+                if(id == null)
+                    return RedirectToAction("Index", "Home");
+                using (var context = new BlogHostDbContext())
+                {
+                    var user = context.Users.Include("Role").Where(x => x.UserId == id.Value).FirstOrDefault();
+                    if (user != null)
+                        return View(user);
+                    return RedirectToAction("Index", "Home");
+                }
+            }
         }
 
         [HttpGet]

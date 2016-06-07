@@ -1,0 +1,53 @@
+﻿@model List<ORM.Entity.Article>
+@{ 
+    Layout = null;
+}
+@if (!(User.Identity.IsAuthenticated && Roles.IsUserInRole(User.Identity.Name, "Admin")))
+{
+    if (Model.Count != 0)
+    {
+        <h3 class="text-center">Resent articles</h3>
+    }
+    else
+    {
+        <h3 class="text-center">There are no articles yet</h3>
+    }
+    foreach(var article in Model)
+    {
+        <div class="panel panel-default">
+            <div class="custom-panel-heading">
+                <div class="row">
+                    <div class="col-md-9">
+                        <h4>@article.Title</h4>
+                    </div>
+                    <div class="col-md-3">
+                        @if (User.Identity.IsAuthenticated)
+                        {
+                            <ul class="list-inline pull-right">
+                                <li><a href="@Url.Action("Edit", new { id = article.ArticleId })" class="btn btn-primary"><i class="glyphicon glyphicon-wrench"></i></a></li>
+                                <li><a href="@Url.Action("Delete", new { id = article.ArticleId })" class="btn btn-primary"><i class="glyphicon glyphicon-trash"></i></a></li>
+                            </ul>
+                        }
+                    </div>
+                </div>
+            </div>
+            <div class="panel-body">
+                <p>@article.Text.Substring(0, 300)...</p>
+            </div>
+            <div class="panel-footer dark-gray">
+                <div class="row">
+                    <div class="col-md-6 col-sm-6">
+                        <h5>Publication date: @article.CreationDate.ToString("MMMM dd, yyyy", new System.Globalization.CultureInfo("En-GB"))</h5>
+                    </div>
+                    <div class="col-md-6 col-sm-6">
+                        <a href="@Url.Action("Details", new {id = article.ArticleId })" class="btn btn-primary pull-right">Read more</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+    if (Model.Count != 0)
+    {
+        <a href="@Url.Action("ForUser", new { id = 1 })" class="btn btn-primary btn-block">See all articles</a>
+    }
+}

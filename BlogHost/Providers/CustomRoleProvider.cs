@@ -14,9 +14,9 @@ namespace BlogHost.Providers
         {
             using (var context = new BlogHostDbContext())
             {
-                var user = context.Users.FirstOrDefault(x => x.Email == email);
+                var user = context.Users.Include("Role").FirstOrDefault(x => x.Email == email);
 
-                return (user != null && user.Role != null && user.Role.Name == roleName);
+                return (user != null && user.Role.Name == roleName);
             }
         }
 

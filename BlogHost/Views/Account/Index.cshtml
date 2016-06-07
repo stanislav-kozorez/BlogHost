@@ -1,135 +1,59 @@
-﻿@{
+﻿@model ORM.Entity.User
+@{
     ViewBag.Title = "Account";
+    int? requestedId = ViewBag.RequestedId;
 }
 
 <div class="row dark-background">
     <div class="col-md-6 col-sm-6">
-        <h2>Blog: lsfkjsldkfj@sdfsd.ru</h2>
+        <h2>Blog: @Model.Email</h2>
     </div>
     <div class="col-md-6 col-sm-6">
+        @if (User.Identity.IsAuthenticated && Roles.IsUserInRole(User.Identity.Name, "Admin") && Model.Email != User.Identity.Name)
+        {
         <div class="dropdown pull-right">
             <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">
                 Dropdown Example
                 <span class="caret"></span>
             </button>
             <ul class="dropdown-menu">
-                <li><a href="#"><span class="icon-wrench"></span> Edit user</a></li>
-                <li><a href="#"><span class="icon-thash"></span> Delete user</a></li>
+                <li><a href="@Url.Action("Edit", "User", new { id= Model.UserId})" id="@Model.UserId">Edit user</a></li>
+                <li><a href="@Url.Action("Delete", "User", new { id= Model.UserId})" id="@Model.UserId">Delete user</a></li>
             </ul>
         </div>
+        }
     </div>
 </div>    
 
 <div class="row bordered">
     <div class="col-md-3">
         <img alt="User Picture" src="~/Content/Images/logo.png" class="img-rounded avatar">
-        @Html.ActionLink("Change avatar", "index", "Article", new { @class = "btn btn-primary btn-block" })
+        @if (User.Identity.IsAuthenticated && User.Identity.Name == Model.Email)
+        {
+            @Html.ActionLink("Change avatar", "index", "Article", new { @class = "btn btn-primary btn-block" })
+        }
     </div>
     <div class="col-md-9">
         <table class="table">
             <tbody>
                 <tr>
                     <td>User name:</td>
-                    <td>John</td>
+                    <td>@Model.Name</td>
                 </tr>
                 <tr>
                     <td>Registration date:</td>
-                    <td>06/23/2013</td>
+                    <td>@Model.CreationDate.ToString("MMMM dd, yyyy", new System.Globalization.CultureInfo("En-GB"))</td>
                 </tr>
                 <tr>
                     <td>Email:</td>
-                    <td><a href="mailto:info@support.com">info@support.com</a></td>
+                    <td><a href="mailto:@Model.Email">@Model.Email</a></td>
                 </tr>
             </tbody>
         </table>
-        <a href="#" class="btn btn-primary"><i class="glyphicon glyphicon-plus"></i> New article</a>
-        @*<hr/>*@
-        <h3 class="text-center">Resent articles</h3>
-        <div class="panel panel-default">
-            <div class="panel-heading">
-                <div class="row">
-                    <div class="col-md-9">
-                        <h4>sfslkdfjsdf</h4>
-                    </div>
-                    <div class="col-md-3">
-                        <ul class="list-inline pull-right">
-                            <li><a href="#" class="btn btn-primary"><i class="glyphicon glyphicon-wrench"></i></a></li>
-                            <li><a href="#" class="btn btn-primary"><i class="glyphicon glyphicon-trash"></i></a></li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-            <div class="panel-body">
-                <p>body</p>
-            </div>
-            <div class="panel-footer">
-                <div class="row">
-                    <div class="col-md-6 col-sm-6">
-                        <h5>May 23 2015 14-29</h5>
-                    </div>
-                    <div class="col-md-6 col-sm-6">
-                        <a href="#" class="btn btn-primary pull-right">Read more</a>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="panel panel-default">
-            <div class="panel-heading">
-                <div class="row">
-                    <div class="col-md-9">
-                        <h4>sfslkdfjsdf</h4>
-                    </div>
-                    <div class="col-md-3">
-                        <ul class="list-inline pull-right">
-                            <li><a href="#" class="btn btn-primary"><i class="glyphicon glyphicon-wrench"></i></a></li>
-                            <li><a href="#" class="btn btn-primary"><i class="glyphicon glyphicon-trash"></i></a></li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-            <div class="panel-body">
-                <p>body</p>
-            </div>
-            <div class="panel-footer">
-                <div class="row">
-                    <div class="col-md-6">
-                        @*<p>May 23 2015 14-29</p>*@
-                        <h5>May 23 2015 14-29</h5>
-                    </div>
-                    <div class="col-md-6">
-                        <a href="#" class="btn btn-primary pull-right">Read more</a>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="panel panel-default">
-            <div class="panel-heading">
-                <div class="row">
-                    <div class="col-md-9">
-                        <h4>sfslkdfjsdf</h4>
-                    </div>
-                    <div class="col-md-3">
-                        <ul class="list-inline pull-right">
-                        <li><a href="#" class="btn btn-primary"><i class="glyphicon glyphicon-wrench"></i></a></li>
-                        <li><a href="#" class="btn btn-primary"><i class="glyphicon glyphicon-trash"></i></a></li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-            <div class="panel-body">
-                <p>body</p>
-            </div>
-            <div class="panel-footer">
-                <div class="row">
-                    <div class="col-md-6">
-                        <h5>May 23 2015 14-29</h5>
-                    </div>
-                    <div class="col-md-6">
-                        <a href="#" class="btn btn-primary pull-right">Read more</a>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <a href="#" class="btn btn-primary btn-block">See all articles</a>
+        @if (Model.Role.Name != "Admin" && requestedId == null)
+        {
+            <a href="@Url.Action("Create", "Article")" class="btn btn-primary"><i class="glyphicon glyphicon-plus"></i> New article</a>
+        }
+        @Html.Action("ForUser", "Article", new { id = Model.UserId})
     </div>
 </div>

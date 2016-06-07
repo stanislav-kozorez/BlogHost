@@ -68,3 +68,26 @@ table{
 .list-inline > li {
     padding: 0;
 }
+
+.custom-panel-heading {
+    color: #333;
+    border-color: #ddd;
+    background-color: #dbdbdb;
+    padding: 10px 15px 0;
+    border-bottom: 1px solid transparent;
+    border-top-left-radius: 3px;
+    border-top-right-radius: 3px;
+}
+
+.dark-gray {
+    /*background-color: #dbdbdb;*/
+    background-color: #fff;
+}
+
+.limited-textarea-width {
+    max-width: 100%;
+}
+
+.panel-body {
+    word-break: break-word;
+}

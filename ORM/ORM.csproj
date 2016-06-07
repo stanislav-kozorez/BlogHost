@@ -50,15 +50,39 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BlogHostDbContext.cs" />
+    <Compile Include="Entity\Article.cs" />
     <Compile Include="Entity\Role.cs" />
     <Compile Include="Entity\User.cs" />
+    <Compile Include="Migrations\201605311206466_InitialCreate.cs" />
+    <Compile Include="Migrations\201605311206466_InitialCreate.Designer.cs">
+      <DependentUpon>201605311206466_InitialCreate.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201606071911210_AddArticles.cs" />
+    <Compile Include="Migrations\201606071911210_AddArticles.Designer.cs">
+      <DependentUpon>201606071911210_AddArticles.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201606071945143_AddFieldTextInArticleTable.cs" />
+    <Compile Include="Migrations\201606071945143_AddFieldTextInArticleTable.Designer.cs">
+      <DependentUpon>201606071945143_AddFieldTextInArticleTable.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
     <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <EmbeddedResource Include="Migrations\201605311206466_InitialCreate.resx">
+      <DependentUpon>201605311206466_InitialCreate.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201606071911210_AddArticles.resx">
+      <DependentUpon>201606071911210_AddArticles.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201606071945143_AddFieldTextInArticleTable.resx">
+      <DependentUpon>201606071945143_AddFieldTextInArticleTable.cs</DependentUpon>
+    </EmbeddedResource>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

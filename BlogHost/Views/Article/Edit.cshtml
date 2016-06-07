@@ -1,0 +1,23 @@
+﻿@model BlogHost.Models.ArticleViewModel
+@{
+    ViewBag.Title = "Edit article";
+}
+<div class="bordered">
+    @using (Html.BeginForm("Create", "Article", FormMethod.Post, new { role = "form" }))
+    {
+        <h2 class="text-center">Edit article</h2>
+        <div class="form-group">
+            @Html.Label("First tag:")
+            @Html.EditorFor(x => x.Tag1);
+        </div>
+        <div class="form-group">
+            @Html.Label("Article title:")
+            @Html.EditorFor(x => x.Title, new { placeholder = "Article title", @class = "form-control" })
+        </div>
+        <div class="form-group">
+            @Html.Label("Article text:")
+            @Html.EditorFor(x => x.Text, new { placeholder = "Write text here", @class = "form-control limited-textarea-width", rows = "10" })
+        </div>
+        <input type="submit" class="btn btn-primary" value="Edit" />
+    }
+</div>

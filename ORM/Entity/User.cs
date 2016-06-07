@@ -14,5 +14,6 @@ namespace ORM.Entity
         public string Password { get; set; }
         public DateTime CreationDate { get; set; }
         public virtual Role Role { get; set; }
+        public virtual ICollection<Article> Articles { get; set; }
     }
 }
