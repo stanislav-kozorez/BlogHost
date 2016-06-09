@@ -1,6 +1,47 @@
-﻿@{ 
+﻿@model BlogHost.Models.EntityListViewModel
+@{ 
     ViewBag.Title = "Welcome to BlogHost";
 }
 <div class="row bordered">
-    This is Home page Content
+    @foreach (var article in Model.Articles)
+    {
+        <div>
+            <div>
+                @article.Title
+            </div>
+            <div>
+                @article.Text
+            </div>
+            <div>
+                @article.CreationDate.ToString("MMMM dd, yyyy", new System.Globalization.CultureInfo("En-GB"))
+            </div>
+        </div>
+    }
+    <div class="row">
+        <div class="col-md-10 col-md-offset-1">@CreatePagination()</div>
+        <div class="col-md-1"></div>
+    </div>
 </div>
+
+@helper CreatePagination()
+{
+    if (Model.PagingInfo.TotalPages != 1)
+    {
+        <ul class="pager">
+            @if (Model.PagingInfo.CurrentPage == 1)
+            {
+                <li><a class="pull-right" href="@Url.Action("Index", "Home", new { page = 2})">Next page</a></li>
+            }
+            else
+                if (Model.PagingInfo.CurrentPage == Model.PagingInfo.TotalPages)
+                {
+                    <li><a class="pull-left" href="@Url.Action("Index", "Home", new { page = Model.PagingInfo.TotalPages - 1})">Previous page</a></li>
+                }
+                else
+                {
+                    <li><a class="pull-left" href="@Url.Action("Index", "Home", new { page = Model.PagingInfo.CurrentPage - 1})">Previous page</a></li>
+                    <li><a class="pull-right" href="@Url.Action("Index", "Home", new { page = Model.PagingInfo.CurrentPage + 1})">Next page</a></li>
+                }
+        </ul>
+    }
+}

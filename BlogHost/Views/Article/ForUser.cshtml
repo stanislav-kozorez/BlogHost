@@ -36,7 +36,14 @@
                 </div>
             </div>
             <div class="panel-body text-wrap">
-                <p>@article.Text.Substring(0, 300)...</p>
+                @if (article.Text.Length > 400)
+                {
+                    <p>@article.Text.Substring(0, 400)...</p>
+                }
+                else
+                {
+                    <p>@article.Text</p>
+                }
             </div>
             <div class="panel-footer dark-gray">
                 <div class="row">
@@ -54,4 +61,10 @@
     {
         <a href="@Url.Action("ForUser", new { id = 1 })" class="btn btn-primary btn-block">See all articles</a>
     }
+}
+
+
+@helper CreatePagination()
+{
+
 }

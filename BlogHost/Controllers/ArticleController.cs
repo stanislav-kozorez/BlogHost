@@ -171,7 +171,7 @@ namespace BlogHost.Controllers
                 if (article != null)
                     context.Articles.Remove(article);
                 context.SaveChanges();
-                return RedirectToAction("Index", "Home");
+                return RedirectToAction("Index", "Account");
             }
         }
     }

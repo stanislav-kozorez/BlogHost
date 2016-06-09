@@ -191,7 +191,9 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Models\ArticleViewModel.cs" />
+    <Compile Include="Models\EntityListViewModel.cs" />
     <Compile Include="Models\LoginViewModel.cs" />
+    <Compile Include="Models\PagingInfo.cs" />
     <Compile Include="Models\RegistrationViewModel.cs" />
     <Compile Include="Models\UserDeleteViewModel.cs" />
     <Compile Include="Models\UserEditViewModel.cs" />

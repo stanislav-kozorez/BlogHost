@@ -22,72 +22,17 @@
         <ul class="list-inline">
             <li><i class="glyphicon glyphicon-tags"></i> Tags:</li>
             <li><a class="btn btn-default" href="@Url.Action("ByTagName","Search", new { tagName = Model.Tag1})"><i class="glyphicon glyphicon-tag"></i> @Model.Tag1</a></li>
-            <li><a class="btn btn-default" href="@Url.Action("ByTagName","Search", new { tagName = Model.Tag2})"><i class="glyphicon glyphicon-tag"></i> @Model.Tag2</a></li>
-            <li><a class="btn btn-default" href="@Url.Action("ByTagName","Search", new { tagName = Model.Tag3})"><i class="glyphicon glyphicon-tag"></i> @Model.Tag3</a></li>
+            @if (Model.Tag2 != null)
+            {
+                <li><a class="btn btn-default" href="@Url.Action("ByTagName", "Search", new { tagName = Model.Tag2 })"><i class="glyphicon glyphicon-tag"></i> @Model.Tag2</a></li>
+            }
+            @if (Model.Tag3 != null)
+            {
+                <li><a class="btn btn-default" href="@Url.Action("ByTagName", "Search", new { tagName = Model.Tag3 })"><i class="glyphicon glyphicon-tag"></i> @Model.Tag3</a></li>
+            }
         </ul>
-        <h5>Publication date: @Model.CreationDate.ToString("MMMM dd, yyyy", new System.Globalization.CultureInfo("En-GB"))</h5>
+        <h5>Publication date: @Model.CreationDate.ToString("MMMM dd, yyyy H:mm", new System.Globalization.CultureInfo("En-GB"))</h5>
     </div>
     <hr />
-    <dl class="dl-horizontal">
-        <dt>
-            @Html.DisplayNameFor(model => model.ArticleId)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.ArticleId)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.AuthorId)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.AuthorId)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.Title)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.Title)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.Text)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.Text)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.Tag1)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.Tag1)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.Tag2)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.Tag2)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.Tag3)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.Tag3)
-        </dd>
-
-    </dl>
+    <p class="lead text-wrap text-left">@Model.Text</p>
 </div>
-<p>
-    @Html.ActionLink("Edit", "Edit", new { /* id = Model.PrimaryKey */ }) |
-    @Html.ActionLink("Back to List", "Index")
-</p>
