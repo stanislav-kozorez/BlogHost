@@ -1,7 +1,6 @@
 ﻿@model ORM.Entity.User
 @{
     ViewBag.Title = "Account";
-    int? requestedId = ViewBag.RequestedId;
 }
 
 <div class="row dark-background">
@@ -9,16 +8,16 @@
         <h2>Blog: @Model.Email</h2>
     </div>
     <div class="col-md-6 col-sm-6">
-        @if (User.Identity.IsAuthenticated && Roles.IsUserInRole(User.Identity.Name, "Admin") && Model.Email != User.Identity.Name)
+        @if (User.Identity.IsAuthenticated && Roles.IsUserInRole("Admin") && Model.Email != User.Identity.Name)
         {
         <div class="dropdown pull-right">
             <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">
-                Dropdown Example
+                Administration
                 <span class="caret"></span>
             </button>
             <ul class="dropdown-menu">
-                <li><a href="@Url.Action("Edit", "User", new { id= Model.UserId})" id="@Model.UserId">Edit user</a></li>
-                <li><a href="@Url.Action("Delete", "User", new { id= Model.UserId})" id="@Model.UserId">Delete user</a></li>
+                <li><a href="@Url.Action("Edit", "User", new { id = Model.UserId })" id="@Model.UserId">Edit user</a></li>
+                <li><a href="@Url.Action("Delete", "User", new { id = Model.UserId })" id="@Model.UserId">Delete user</a></li>
             </ul>
         </div>
         }
@@ -50,7 +49,7 @@
                 </tr>
             </tbody>
         </table>
-        @if (Model.Role.Name != "Admin" && requestedId == null)
+        @if (User.Identity.IsAuthenticated && User.Identity.Name == Model.Email && Roles.IsUserInRole("User"))
         {
             <a href="@Url.Action("Create", "Article")" class="btn btn-primary"><i class="glyphicon glyphicon-plus"></i> New article</a>
         }

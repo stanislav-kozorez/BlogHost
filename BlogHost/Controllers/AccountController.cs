@@ -13,11 +13,10 @@ namespace BlogHost.Controllers
     [AllowAnonymous]
     public class AccountController : Controller
     {
-        public ActionResult Index(int? id)
+        public ActionResult Index()
         {
-            ViewBag.RequestedId = id;
             string email = null;
-            if (id == null && User.Identity.IsAuthenticated)
+            if (User.Identity.IsAuthenticated)
             {
                 email = User.Identity.Name;
                 using (var context = new BlogHostDbContext())
@@ -25,20 +24,19 @@ namespace BlogHost.Controllers
                     var user = context.Users.Include("Role").Where(x => x.Email == email).FirstOrDefault();
                     if (user != null)
                         return View(user);
-                    return RedirectToAction("Login");
                 }
             }
-            else
+            return RedirectToAction("Login");
+        }
+
+        public ActionResult ForUser(int id)
+        {
+            using (var context = new BlogHostDbContext())
             {
-                if(id == null)
-                    return RedirectToAction("Index", "Home");
-                using (var context = new BlogHostDbContext())
-                {
-                    var user = context.Users.Include("Role").Where(x => x.UserId == id.Value).FirstOrDefault();
-                    if (user != null)
-                        return View(user);
-                    return RedirectToAction("Index", "Home");
-                }
+                var user = context.Users.Include("Role").Where(x => x.UserId == id).FirstOrDefault();
+                if (user != null)
+                    return View("Index", user);
+                return RedirectToAction("Index", "Home");
             }
         }
 

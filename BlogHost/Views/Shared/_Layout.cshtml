@@ -15,8 +15,15 @@
                 <a href="@Url.Action("Index", "Home")" class="navbar-brand no-padding"><img src="~/Content/Images/logo.png"/>BlogHost Application</a>
             </div>
             <ul class="nav navbar-nav">
-                <li>@Html.ActionLink("My Profile", "Index", "Home", new { @class = "active"})</li>
-                <li>@Html.ActionLink("Articles", "Index", "Articles")</li>
+                @if (User.Identity.IsAuthenticated)
+                {
+                    <li>@Html.ActionLink("My account", "Index", "Account")</li>
+                    if (Roles.IsUserInRole("Admin"))
+                    {
+                        <li>@Html.ActionLink("User administration", "Index","User", null, new { @class = "active"})</li>
+                    }
+                }
+                <li>@Html.ActionLink("Search", "Index", "Search")</li>
             </ul>
             <ul class="nav navbar-nav navbar-right">
                 @if (User.Identity.IsAuthenticated)

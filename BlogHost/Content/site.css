@@ -88,6 +88,6 @@ table{
     max-width: 100%;
 }
 
-.panel-body {
-    word-break: break-word;
+.text-wrap {
+    word-wrap: break-word;
 }

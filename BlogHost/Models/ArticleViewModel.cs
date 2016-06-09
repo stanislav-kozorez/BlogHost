@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using System.ComponentModel.DataAnnotations;
 
 namespace BlogHost.Models
 {
@@ -15,5 +16,6 @@ namespace BlogHost.Models
         public string Tag1 { get; set; }
         public string Tag2 { get; set; }
         public string Tag3 { get; set; }
+        public DateTime CreationDate { get; set; }
     }
 }

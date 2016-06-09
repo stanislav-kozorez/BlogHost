@@ -1,0 +1,93 @@
+﻿@model BlogHost.Models.ArticleViewModel
+@{ 
+    int loggedUserId = ViewBag.LoggedUserId;
+}
+
+<div class="row dark-background text-wrap">
+    <div class="col-md-10 col-sm-10">
+        <h2>@Model.Title</h2>
+    </div>
+    <div class="col-md-2 col-sm-2">
+        @if (User.Identity.IsAuthenticated && (Roles.IsUserInRole("Moderator") || Model.AuthorId == loggedUserId))
+        {
+            <ul class="list-inline pull-right">
+                <li><a href="@Url.Action("Edit", new { id = Model.ArticleId })" class="btn btn-primary"><i class="glyphicon glyphicon-wrench"></i></a></li>
+                <li><a href="@Url.Action("Delete", new { id = Model.ArticleId })" class="btn btn-primary"><i class="glyphicon glyphicon-trash"></i></a></li>
+            </ul>
+        }
+    </div>
+</div>    
+<div class="row bordered">
+    <div>
+        <ul class="list-inline">
+            <li><i class="glyphicon glyphicon-tags"></i> Tags:</li>
+            <li><a class="btn btn-default" href="@Url.Action("ByTagName","Search", new { tagName = Model.Tag1})"><i class="glyphicon glyphicon-tag"></i> @Model.Tag1</a></li>
+            <li><a class="btn btn-default" href="@Url.Action("ByTagName","Search", new { tagName = Model.Tag2})"><i class="glyphicon glyphicon-tag"></i> @Model.Tag2</a></li>
+            <li><a class="btn btn-default" href="@Url.Action("ByTagName","Search", new { tagName = Model.Tag3})"><i class="glyphicon glyphicon-tag"></i> @Model.Tag3</a></li>
+        </ul>
+        <h5>Publication date: @Model.CreationDate.ToString("MMMM dd, yyyy", new System.Globalization.CultureInfo("En-GB"))</h5>
+    </div>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.ArticleId)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.ArticleId)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.AuthorId)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.AuthorId)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Title)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Title)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Text)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Text)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Tag1)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Tag1)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Tag2)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Tag2)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Tag3)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Tag3)
+        </dd>
+
+    </dl>
+</div>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { /* id = Model.PrimaryKey */ }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>
