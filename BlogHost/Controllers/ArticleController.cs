@@ -21,17 +21,34 @@ namespace BlogHost.Controllers
 
         [AllowAnonymous]
         [ChildActionOnly]
-        public ActionResult ForUser(int? id)
+        public ActionResult ForUser(int? id, int page = 1)
         {
             if (id == null)
                 return RedirectToAction("Index", "Home");
             using (var context = new BlogHostDbContext())
             {
-                var articles = context.Articles.Where(x => x.Author.UserId == id.Value).OrderBy(x => x.CreationDate).ToList();
+                int pageSize = 1;
+                var model = new EntityListViewModel<ArticleViewModel>();
+                var ormArticles = context.Articles.OrderBy(x => x.CreationDate).Where(x => x.Author.UserId == id.Value).Skip((page - 1) * pageSize).Take(pageSize).ToList();
+                //var ormArticles = context.Articles.Where(x => x.Author.UserId == id.Value).OrderBy(x => x.CreationDate).ToList();
+                var articleViewModel = ormArticles.Select(x => new ArticleViewModel()
+                {
+                    ArticleId = x.ArticleId,
+                    CreationDate = x.CreationDate,
+                    Title = x.Title,
+                    Text = x.Text
+                });
+                model.Items = articleViewModel;
+                model.PagingInfo = new PagingInfo()
+                {
+                    CurrentPage = page,
+                    ItemsPerPage = pageSize,
+                    TotalItems = context.Articles.Count()
+                };
                 var email = context.Users.Where(x => x.UserId == id.Value).FirstOrDefault().Email;
                 if (email != null)
                     ViewBag.UserEmail = email;
-                return View(articles);
+                return PartialView("ArticleListPartial", model);
             }
         }
 

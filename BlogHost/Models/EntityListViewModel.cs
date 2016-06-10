@@ -5,9 +5,9 @@ using System.Web;
 
 namespace BlogHost.Models
 {
-    public class EntityListViewModel
+    public class EntityListViewModel<T>
     {
-        public IEnumerable<ArticleViewModel> Articles { get; set; }
+        public IEnumerable<T> Items { get; set; }
         public PagingInfo PagingInfo { get; set; }
     }
 }

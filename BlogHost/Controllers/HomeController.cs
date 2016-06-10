@@ -14,12 +14,12 @@ namespace BlogHost.Controllers
         // GET: Home
         public ActionResult Index(int page = 1)
         {
-            int pageSize = 1;
             using (var context = new BlogHostDbContext())
             {
-                var model = new EntityListViewModel();
-                var ormArticles = context.Articles.Include("Author").OrderBy(x => x.ArticleId).Skip((page - 1) * pageSize).Take(pageSize).ToList();
-                model.Articles = ormArticles.Select(
+                int pageSize = 1;
+                var model = new EntityListViewModel<ArticleViewModel>();
+                var ormArticles = context.Articles.Include("Author").OrderBy(x => x.CreationDate).Skip((page - 1) * pageSize).Take(pageSize).ToList();
+                model.Items = ormArticles.Select(
                     x => new ArticleViewModel() {
                         ArticleId = x.ArticleId,
                         AuthorId = x.Author.UserId,
