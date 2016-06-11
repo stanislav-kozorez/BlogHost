@@ -21,16 +21,13 @@ namespace BlogHost.Controllers
 
         [AllowAnonymous]
         [ChildActionOnly]
-        public ActionResult ForUser(int? id, int page = 1)
+        public ActionResult ForUser(int id, int page = 1)
         {
-            if (id == null)
-                return RedirectToAction("Index", "Home");
             using (var context = new BlogHostDbContext())
             {
                 int pageSize = 1;
                 var model = new EntityListViewModel<ArticleViewModel>();
-                var ormArticles = context.Articles.OrderBy(x => x.CreationDate).Where(x => x.Author.UserId == id.Value).Skip((page - 1) * pageSize).Take(pageSize).ToList();
-                //var ormArticles = context.Articles.Where(x => x.Author.UserId == id.Value).OrderBy(x => x.CreationDate).ToList();
+                var ormArticles = context.Articles.OrderBy(x => x.CreationDate).Where(x => x.Author.UserId == id).Skip((page - 1) * pageSize).Take(pageSize).ToList();
                 var articleViewModel = ormArticles.Select(x => new ArticleViewModel()
                 {
                     ArticleId = x.ArticleId,
@@ -43,19 +40,14 @@ namespace BlogHost.Controllers
                 {
                     CurrentPage = page,
                     ItemsPerPage = pageSize,
-                    TotalItems = context.Articles.Count()
+                    TotalItems = context.Articles.Where(x => x.Author.UserId == id).Count()
                 };
-                var email = context.Users.Where(x => x.UserId == id.Value).FirstOrDefault().Email;
+                TempData.Add("PagingInfo",model.PagingInfo);
+                var email = context.Users.Where(x => x.UserId == id).FirstOrDefault().Email;
                 if (email != null)
                     ViewBag.UserEmail = email;
                 return PartialView("ArticleListPartial", model);
             }
-        }
-
-        [AllowAnonymous]
-        public ActionResult All(int id)
-        {
-            return View();
         }
 
         public ActionResult Create()
@@ -63,6 +55,7 @@ namespace BlogHost.Controllers
             return View();
         }
 
+        [AllowAnonymous]
         public ActionResult Details(int id)
         {
             using(var context = new BlogHostDbContext())
@@ -80,7 +73,7 @@ namespace BlogHost.Controllers
                     articleViewModel.Text = ormArticle.Text;
                     articleViewModel.CreationDate = ormArticle.CreationDate;
                     var loggedUser = context.Users.Where(x => x.Email == User.Identity.Name).FirstOrDefault();
-                    ViewBag.LoggedUserId = loggedUser.UserId;
+                    ViewBag.LoggedUserId = loggedUser?.UserId;
 
                     return View(articleViewModel);
                 }

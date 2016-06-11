@@ -13,29 +13,25 @@ namespace BlogHost.Controllers
     [AllowAnonymous]
     public class AccountController : Controller
     {
-        public ActionResult Index()
-        {
-            string email = null;
-            if (User.Identity.IsAuthenticated)
-            {
-                email = User.Identity.Name;
-                using (var context = new BlogHostDbContext())
-                {
-                    var user = context.Users.Include("Role").Where(x => x.Email == email).FirstOrDefault();
-                    if (user != null)
-                        return View(user);
-                }
-            }
-            return RedirectToAction("Login");
-        }
-
-        public ActionResult ForUser(int id)
+        public ActionResult Index(int? id, int page = 1)
         {
             using (var context = new BlogHostDbContext())
             {
-                var user = context.Users.Include("Role").Where(x => x.UserId == id).FirstOrDefault();
+                ORM.Entity.User user;
+                if (id == null)
+                {
+                    if (User.Identity.IsAuthenticated)
+                        user = context.Users.Include("Role").Where(x => x.Email == User.Identity.Name).FirstOrDefault();
+                    else
+                        return RedirectToAction("Index", "Home");
+                }
+                else
+                    user = context.Users.Include("Role").Where(x => x.UserId == id.Value).FirstOrDefault();
                 if (user != null)
-                    return View("Index", user);
+                {
+                    ViewBag.CurrentPage = page;
+                    return View(user);
+                }
                 return RedirectToAction("Index", "Home");
             }
         }
@@ -62,8 +58,11 @@ namespace BlogHost.Controllers
                     ///{
                     //     return Redirect(returnUrl);
                     //}
-                   // else
-                   // {
+                    // else
+                    // {
+                    if (Roles.IsUserInRole(user.Email, "Admin"))
+                        return RedirectToAction("Index", "User");
+                    else
                         return RedirectToAction("Index", "Home");
                    // }
                 }

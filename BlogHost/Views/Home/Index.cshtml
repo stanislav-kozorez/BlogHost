@@ -3,6 +3,26 @@
 @{ 
     ViewBag.Title = "Welcome to BlogHost";
 }
-<div class="row bordered">
-    @Html.Partial("ArticleListPartial", Model)
+
+<div class="row text-center margin-bottom">
+    <div class="col-md-8 col-md-offset-2">
+        <h1 class="heading">Welcome to BlogHost</h1>
+        <p class="intro-text">Created by Stanislav Kozorez</p>
+        <hr />
+    </div>
 </div>
+
+@if (!Roles.IsUserInRole("Admin"))
+{
+    <div class="row bordered">
+        @Html.Partial("ArticleListPartial", Model)
+        @if (Model.PagingInfo.TotalPages != 0)
+        {
+            <div class="text-center">
+                <ul class="pagination">
+                    @Html.PageLinks(Model.PagingInfo, x => Url.Action("Index", new { page = x }))
+                </ul>
+            </div>
+        }
+    </div>
+}

@@ -1,4 +1,5 @@
 ﻿@using BlogHost.Infrastructure
+@using BlogHost.Models
 @model ORM.Entity.User
 @{
     ViewBag.Title = "Account";
@@ -54,6 +55,17 @@
         {
             <a href="@Url.Action("Create", "Article")" class="btn btn-primary"><i class="glyphicon glyphicon-plus"></i> New article</a>
         }
-        @Html.Action("ForUser", "Article", new { id = Model.UserId})
+        @Html.Action("ForUser", "Article", new { id = Model.UserId, page = ViewBag.CurrentPage})
+        @{
+            PagingInfo pagingInfo = (PagingInfo)TempData["PagingInfo"];
+        }
+        @if (pagingInfo.TotalPages != 0)
+        {
+            <div class="text-center">
+                <ul class="pagination">
+                    @Html.PageLinks(pagingInfo, x => Url.Action("Index", new { id = Model.UserId, page = x }))
+                </ul>
+            </div>
+        }
     </div>
 </div>

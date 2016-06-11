@@ -16,7 +16,7 @@ namespace BlogHost.Controllers
         {
             using (var context = new BlogHostDbContext())
             {
-                int pageSize = 1;
+                int pageSize = 5;
                 var model = new EntityListViewModel<ArticleViewModel>();
                 var ormArticles = context.Articles.Include("Author").OrderBy(x => x.CreationDate).Skip((page - 1) * pageSize).Take(pageSize).ToList();
                 model.Items = ormArticles.Select(

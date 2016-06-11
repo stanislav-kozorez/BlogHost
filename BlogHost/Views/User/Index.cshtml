@@ -1,10 +1,11 @@
-﻿@model List<ORM.Entity.User>
+﻿@using BlogHost.Infrastructure
+@model BlogHost.Models.EntityListViewModel<ORM.Entity.User>
 @{
     ViewBag.Title = "List of users";
 }
 <div class="bordered">
     <h2 class="text-center">User management</h2>
-    @if (Model.Count == 1)
+    @if (Model.Items.Count() == 0)
     {
         <p class="lead">There are no users yet.</p>
     }
@@ -21,22 +22,34 @@
                 </tr>
             </thead>
             <tbody>
-            @foreach (var item in Model)
+            @foreach (var item in Model.Items)
             {
-                if (HttpContext.Current.User.IsInRole(item.Role.Name) && item.Email == HttpContext.Current.User.Identity.Name)
-                {
-                    continue;
-                }
                 <tr>
                     <td>@Html.DisplayFor(x => item.Name)</td>
                     <td>@Html.DisplayFor(x => item.Email)</td>
                     <td>@Html.DisplayFor(x => item.CreationDate)</td>
                     <td>@Html.DisplayFor(x => item.Role.Name)</td>
-                    <td>@Html.ActionLink("Edit", "Edit", "User", new { id = item.UserId }, new { @class = "btn btn-success btn-block" })</td>
-                    <td>@Html.ActionLink("Delete", "Delete", "User", new { id = item.UserId }, new { @class = "btn btn-danger btn-block" })</td>
+                    @if (User.Identity.Name != item.Email)
+                    {
+                        <td>@Html.ActionLink("Edit", "Edit", "User", new { id = item.UserId }, new { @class = "btn btn-success btn-block" })</td>
+                        <td>@Html.ActionLink("Delete", "Delete", "User", new { id = item.UserId }, new { @class = "btn btn-danger btn-block" })</td>
+                    }
+                    else
+                    {
+                        <td></td>
+                        <td></td>
+                    }
                 </tr>
             }
             </tbody>
         </table>
+        if (Model.PagingInfo.TotalPages != 0)
+        {
+            <div class="text-center">
+                <ul class="pagination">
+                    @Html.PageLinks(Model.PagingInfo, x => Url.Action("Index", new { page = x }))
+                </ul>
+            </div>
+        }
     }
 </div>

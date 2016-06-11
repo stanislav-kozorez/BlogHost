@@ -14,12 +14,22 @@ namespace BlogHost.Controllers
     public class UserController : Controller
     {
         // GET: User
-        public ActionResult Index()
+        public ActionResult Index(int page = 1)
         {
             using (var context = new BlogHostDbContext())
             {
-                List<User> users = context.Users.Include("Role").ToList();
-                return View(users);
+                int pageSize = 3;
+                var model = new EntityListViewModel<User>();
+                var ormUsers = context.Users.Include("Role").OrderBy(x => x.UserId).Skip((page - 1) * pageSize).Take(pageSize).ToList();
+                //List<User> users = context.Users.Include("Role").ToList();
+                model.Items = ormUsers;
+                model.PagingInfo = new PagingInfo()
+                {
+                    CurrentPage = page,
+                    ItemsPerPage = pageSize,
+                    TotalItems = context.Users.Count()
+                };
+                return View(model);
             }
         }
 
@@ -32,6 +42,8 @@ namespace BlogHost.Controllers
                 var ormUser = context.Users.Find(id);
                 if (ormUser != null)
                 {
+                    if (ormUser.Email == User.Identity.Name)
+                        return RedirectToAction("Index");
                     var editUser = new UserEditViewModel();
                     editUser.UserId = ormUser.UserId;
                     editUser.Name = ormUser.Name;
@@ -39,9 +51,6 @@ namespace BlogHost.Controllers
                     editUser.RoleId = ormUser.Role.RoleId;
                     editUser.Roles = new SelectList(context.Roles.ToList(), "RoleId", "Name");
 
-                    //ViewBag.Roles = new SelectList(context.Roles.ToList(), "RoleId", "Name", ormUser.Role.RoleId);
-
-                    //ViewBag.Roles = context.Roles.ToList().Select(x => new SelectListItem() {Text = x.Name, Value = x.RoleId.ToString(), Selected = x.RoleId == ormUser.Role.RoleId });
                     return View(editUser);
                 }
             }
@@ -78,6 +87,8 @@ namespace BlogHost.Controllers
                 var ormUser = context.Users.Find(id);
                 if (ormUser != null)
                 {
+                    if (ormUser.Email == User.Identity.Name)
+                        return RedirectToAction("Index");
                     var deleteUser = new UserDeleteViewModel() { Email = ormUser.Email, UserId = ormUser.UserId };
                     return View(deleteUser);
                 }

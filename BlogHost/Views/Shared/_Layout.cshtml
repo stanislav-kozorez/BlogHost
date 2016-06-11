@@ -17,7 +17,8 @@
             <ul class="nav navbar-nav">
                 @if (User.Identity.IsAuthenticated)
                 {
-                    <li>@Html.ActionLink("My account", "Index", "Account")</li>
+                    <li><a href="/Account">My account</a></li>
+                    @*<li>@Html.ActionLink("My account", "Index", "Account")</li>*@
                     if (Roles.IsUserInRole("Admin"))
                     {
                         <li>@Html.ActionLink("User administration", "Index","User", null, new { @class = "active"})</li>
