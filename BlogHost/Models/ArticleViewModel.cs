@@ -12,6 +12,7 @@ namespace BlogHost.Models
         public int ArticleId { get; set; }
         public int AuthorId { get; set; }
         public string Title { get; set; }
+        [AllowHtml]
         public string Text { get; set; }
         public string Tag1 { get; set; }
         public string Tag2 { get; set; }

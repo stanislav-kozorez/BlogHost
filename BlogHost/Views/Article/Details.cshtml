@@ -34,5 +34,5 @@
         <h5>Publication date: @Model.CreationDate.ToString("MMMM dd, yyyy H:mm", new System.Globalization.CultureInfo("En-GB"))</h5>
     </div>
     <hr />
-    <p class="lead text-wrap text-left">@Model.Text</p>
+    <p class="lead text-wrap text-left">@Html.Raw(Model.Text)</p>
 </div>

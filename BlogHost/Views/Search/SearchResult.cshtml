@@ -1,0 +1,16 @@
+﻿@using BlogHost.Infrastructure
+@model BlogHost.Models.EntityListViewModel<BlogHost.Models.ArticleViewModel>
+
+<div class="bordered">
+    <h2>SearchResult for keyword @ViewBag.Keyword</h2>
+    <h3>Founded: @Model.PagingInfo.TotalItems articles</h3>
+    @Html.Partial("ArticleListPartial", Model)
+    @if (Model.PagingInfo.TotalPages != 0)
+    {
+        <div class="text-center">
+            <ul class="pagination">
+                @Html.PageLinks(Model.PagingInfo, x => Url.Action("Index", new { page = x, keyword = ViewBag.Keyword }))
+            </ul>
+        </div>
+    }
+</div>

@@ -13,8 +13,7 @@ body{
 }
 
 .bordered{
-    /*background-color:#f6f6f6;*/
-    background-color:rgba(246, 246, 246, 0.94);
+    background-color: rgba(82, 75, 67, 0.82);
     border-radius: 5px;
     margin-bottom: 20px;
     padding: 15px;

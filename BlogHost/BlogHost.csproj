@@ -186,6 +186,7 @@
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\ArticleController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\SearchController.cs" />
     <Compile Include="Controllers\UserController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
@@ -230,6 +231,7 @@
     <Content Include="Views\Article\Delete.cshtml" />
     <Content Include="Views\Article\Details.cshtml" />
     <Content Include="Views\Shared\ArticleListPartial.cshtml" />
+    <Content Include="Views\Search\SearchResult.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

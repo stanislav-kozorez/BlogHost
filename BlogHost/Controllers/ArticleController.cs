@@ -4,6 +4,7 @@ using ORM.Entity;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Web;
 using System.Web.Mvc;
 using System.Web.Security;
@@ -25,7 +26,7 @@ namespace BlogHost.Controllers
         {
             using (var context = new BlogHostDbContext())
             {
-                int pageSize = 1;
+                int pageSize = 3;
                 var model = new EntityListViewModel<ArticleViewModel>();
                 var ormArticles = context.Articles.OrderBy(x => x.CreationDate).Where(x => x.Author.UserId == id).Skip((page - 1) * pageSize).Take(pageSize).ToList();
                 var articleViewModel = ormArticles.Select(x => new ArticleViewModel()
@@ -97,7 +98,7 @@ namespace BlogHost.Controllers
                     article.Author = user;
                     article.CreationDate = DateTime.Now;
                     article.Title = model.Title;
-                    article.Text = model.Text;
+                    article.Text = EncodeArticleText(model.Text);
                     article.Tag1 = model.Tag1;
                     article.Tag2 = model.Tag2;
                     article.Tag3 = model.Tag3;
@@ -145,7 +146,7 @@ namespace BlogHost.Controllers
                         ormArticle.Tag2 = articleViewModel.Tag2;
                         ormArticle.Tag3 = articleViewModel.Tag3;
                         ormArticle.Title = articleViewModel.Title;
-                        ormArticle.Text = articleViewModel.Text;
+                        ormArticle.Text = EncodeArticleText(articleViewModel.Text);
                         context.SaveChanges();
                         return RedirectToAction("Index", "Account");
                     }
@@ -183,6 +184,20 @@ namespace BlogHost.Controllers
                 context.SaveChanges();
                 return RedirectToAction("Index", "Account");
             }
+        }
+
+        private string EncodeArticleText(string text)
+        {
+            StringBuilder sb = new StringBuilder(HttpUtility.HtmlEncode(text));
+            //<b>,<i>,<br>,<pre>
+            sb.Replace("&lt;b&gt;", "<b>");
+            sb.Replace("&lt;/b&gt;", "</b>");
+            sb.Replace("&lt;i&gt;", "<i>");
+            sb.Replace("&lt;/i&gt;", "</i>");
+            sb.Replace("&lt;br&gt;", "<br>");
+            sb.Replace("&lt;pre&gt;", "<pre>");
+            sb.Replace("&lt;/pre&gt;", "</pre>");
+            return sb.ToString();
         }
     }
 }

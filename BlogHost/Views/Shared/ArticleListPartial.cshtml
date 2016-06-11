@@ -37,19 +37,19 @@
                 </div>
             </div>
             <div class="panel-body text-wrap">
-                @if (article.Text.Length > 400)
+                @if (article.Text.Length > 200)
                 {
-                    <p>@article.Text.Substring(0, 400)...</p>
+                    <p>@(Html.Raw(article.Text.Substring(0, 200)))...</p>
                 }
                 else
                 {
-                    <p>@article.Text</p>
+                    <p>@Html.Raw(article.Text)</p>
                 }
             </div>
             <div class="panel-footer dark-gray">
                 <div class="row">
                     <div class="col-md-6 col-sm-6">
-                        <h5>Publication date: @article.CreationDate.ToString("MMMM dd, yyyy", new System.Globalization.CultureInfo("En-GB"))</h5>
+                        <h5>Publication date: @article.CreationDate.ToString("MMMM dd, yyyy H:mm", new System.Globalization.CultureInfo("En-GB"))</h5>
                     </div>
                     <div class="col-md-6 col-sm-6">
                         <a href="@Url.Action("Details", "Article", new {id = article.ArticleId })" class="btn btn-primary pull-right">Read more</a>
