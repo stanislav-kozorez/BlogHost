@@ -13,7 +13,7 @@ namespace BlogHost.Controllers
     {
         public ActionResult Index(string keyword, int page = 1)
         {
-            if (string.IsNullOrEmpty(keyword))
+            if (string.IsNullOrWhiteSpace(keyword) || User.IsInRole("Admin"))
                 return RedirectToAction("Index", "Home");
 
             int pageSize = 1;
@@ -36,6 +36,42 @@ namespace BlogHost.Controllers
                     ItemsPerPage = pageSize,
                     TotalItems = searchResultCount
                 };
+                ViewBag.Keyword = keyword;
+                return View("SearchResult", model);
+            }
+        }
+
+        public ActionResult ByTagName(string tagName, int page = 1)
+        {
+            if(string.IsNullOrWhiteSpace(tagName) || User.IsInRole("Admin"))
+                return RedirectToAction("Index", "Home");
+
+            int pageSize = 1;
+
+            using (var context = new BlogHostDbContext())
+            {
+                var ormArticles = context.Articles.OrderByDescending(x => x.CreationDate)
+                    .Where(x => string.Compare(x.Tag1, tagName, true) == 0 
+                    || string.Compare(x.Tag2, tagName, true) == 0
+                    || string.Compare(x.Tag3, tagName, true) == 0).Skip((page - 1) * pageSize).Take(pageSize).ToList();
+                int searchResultCount = context.Articles.Where(x => string.Compare(x.Tag1, tagName, true) == 0
+                    || string.Compare(x.Tag2, tagName, true) == 0
+                    || string.Compare(x.Tag3, tagName, true) == 0).Count();
+                var model = new EntityListViewModel<ArticleViewModel>();
+                model.Items = ormArticles.Select(x => new ArticleViewModel()
+                {
+                    ArticleId = x.ArticleId,
+                    CreationDate = x.CreationDate,
+                    Title = x.Title,
+                    Text = x.Text
+                });
+                model.PagingInfo = new PagingInfo()
+                {
+                    CurrentPage = page,
+                    ItemsPerPage = pageSize,
+                    TotalItems = searchResultCount
+                };
+                ViewBag.TagName = tagName;
                 return View("SearchResult", model);
             }
         }
