@@ -10,6 +10,7 @@ body{
     background-attachment: fixed;
     background-repeat: no-repeat;
     background-size: cover;
+    /*color:#fff;*/
 }
 
 .bordered{
@@ -108,4 +109,23 @@ table{
 
 .margin-bottom{
     margin-bottom: 50px;
+}
+
+.comment-avatar {
+    width: 60px;
+    height: 60px;
+    margin: 10px;
+}
+
+.margin-top {
+    margin-top: 20px;
+}
+
+.comment-heading {
+    height: 70px;
+
+}
+
+.padding {
+    padding: 15px;
 }

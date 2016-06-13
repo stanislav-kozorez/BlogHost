@@ -51,6 +51,7 @@
   <ItemGroup>
     <Compile Include="BlogHostDbContext.cs" />
     <Compile Include="Entity\Article.cs" />
+    <Compile Include="Entity\Comment.cs" />
     <Compile Include="Entity\Role.cs" />
     <Compile Include="Entity\User.cs" />
     <Compile Include="Migrations\201605311206466_InitialCreate.cs" />
@@ -64,6 +65,10 @@
     <Compile Include="Migrations\201606071945143_AddFieldTextInArticleTable.cs" />
     <Compile Include="Migrations\201606071945143_AddFieldTextInArticleTable.Designer.cs">
       <DependentUpon>201606071945143_AddFieldTextInArticleTable.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201606131328344_AddCommentTable2.cs" />
+    <Compile Include="Migrations\201606131328344_AddCommentTable2.Designer.cs">
+      <DependentUpon>201606131328344_AddCommentTable2.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -81,6 +86,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201606071945143_AddFieldTextInArticleTable.resx">
       <DependentUpon>201606071945143_AddFieldTextInArticleTable.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201606131328344_AddCommentTable2.resx">
+      <DependentUpon>201606131328344_AddCommentTable2.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

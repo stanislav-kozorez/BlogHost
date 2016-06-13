@@ -14,12 +14,6 @@ namespace BlogHost.Controllers
     [Authorize(Roles = "User,Moderator")]
     public class ArticleController : Controller
     {
-        // GET: Article
-        public ActionResult Index()
-        {
-            return View();
-        }
-
         [AllowAnonymous]
         [ChildActionOnly]
         public ActionResult ForUser(int id, int page = 1)
@@ -57,7 +51,7 @@ namespace BlogHost.Controllers
         }
 
         [AllowAnonymous]
-        public ActionResult Details(int id)
+        public ActionResult Details(int id, int page = 1)
         {
             using(var context = new BlogHostDbContext())
             {
@@ -75,6 +69,7 @@ namespace BlogHost.Controllers
                     articleViewModel.CreationDate = ormArticle.CreationDate;
                     var loggedUser = context.Users.Where(x => x.Email == User.Identity.Name).FirstOrDefault();
                     ViewBag.LoggedUserId = loggedUser?.UserId;
+                    ViewBag.CurrentPage = page;
 
                     return View(articleViewModel);
                 }

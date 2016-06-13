@@ -1,0 +1,26 @@
+﻿@model BlogHost.Models.CommentViewModel
+@{
+    ViewBag.Title = "Confirm comment delete";
+}
+
+<div class="row">
+    <div class="col-md-4 col-md-offset-4 bordered">
+        @using (Html.BeginForm("Delete", "Comment", FormMethod.Post, new { role = "form" }))
+        {
+            <div class="text-center text-wrap">
+                <a href="@Url.Action("Index", "Home")"><img class="logo" src="~/Content/Images/logo.png"></a>
+                <h2 class="text-center">Delete Confirmation</h2>
+                <p class="lead">Are you sure that you want to delete the comment "@Model.Text"?</p>
+            </div>
+            @Html.HiddenFor(x => x.Id)
+            <div class="row">
+                <div class="col-md-6">
+                    <input type="submit" value="Yes" class="btn btn-block btn-primary" />
+                </div>
+                <div class="col-md-6">
+                    @Html.ActionLink("No", "Index", "Home", null, new { @class = "btn btn-primary btn-block" })
+                </div>
+            </div>
+        }
+    </div>
+</div>

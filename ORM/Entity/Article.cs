@@ -16,5 +16,6 @@ namespace ORM.Entity
         public string Tag2 { get; set; }
         public string Tag3 { get; set; }
         public virtual User Author { get; set; }
+        public virtual ICollection<Comment> Comments { get; set; }
     }
 }
