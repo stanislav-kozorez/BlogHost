@@ -9,7 +9,7 @@ namespace ORM.Entity
     public class Comment
     {
         public int CommentId { get; set; }
-        public int Text { get; set; }
+        public string Text { get; set; }
         public DateTime CreationDate { get; set; }
         public virtual User Author { get; set; }
         public virtual Article Article { get; set; }

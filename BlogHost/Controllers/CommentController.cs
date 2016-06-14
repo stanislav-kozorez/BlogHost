@@ -19,7 +19,7 @@ namespace BlogHost.Controllers
             {
                 int pageSize = 3;
                 var model = new EntityListViewModel<CommentViewModel>();
-                var ormComments = context.Comments.OrderByDescending(x => x.CreationDate).Where(x => x.Article.ArticleId == articleId).Skip((page - 1) * pageSize).Take(pageSize).ToList();
+                var ormComments = context.Comments.Include("Author").OrderByDescending(x => x.CreationDate).Where(x => x.Article.ArticleId == articleId).Skip((page - 1) * pageSize).Take(pageSize).ToList();
                 var commentViewModel = ormComments.Select(x => new CommentViewModel()
                 {
                     AuthorId = x.Author.UserId,
@@ -36,6 +36,8 @@ namespace BlogHost.Controllers
                     ItemsPerPage = pageSize,
                     TotalItems = context.Comments.Where(x => x.Article.ArticleId == articleId).Count()
                 };
+
+                ViewBag.ArticleId = articleId;
                 
                 return PartialView("CommentsPartial", model);
             }
@@ -51,7 +53,7 @@ namespace BlogHost.Controllers
                     {
                         CreationDate = DateTime.Now,
                         Text = comment.Text,
-                        Author = context.Users.Find(comment.AuthorId),
+                        Author = context.Users.Where(x => x.Email == comment.AuthorEmail).FirstOrDefault(),
                         Article = context.Articles.Find(comment.ArticleId)
                     };
                     context.Comments.Add(ormComment);
@@ -87,7 +89,7 @@ namespace BlogHost.Controllers
                 if (ormComment != null)
                     context.Comments.Remove(ormComment);
                 context.SaveChanges();
-                return RedirectToAction("Index", "Account");
+                return RedirectToAction("Index", "Home");
             }
         }
     }

@@ -1,0 +1,60 @@
+﻿@using BlogHost.Infrastructure
+@model BlogHost.Models.EntityListViewModel<BlogHost.Models.CommentViewModel>
+@{ 
+    Layout = null;
+    int articleId = ViewBag.ArticleId;
+}
+<div class="row bordered">
+    <h3 class="text-center">Total comments: @Model.PagingInfo.TotalItems</h3>
+    @if (User.Identity.IsAuthenticated && !User.IsInRole("Admin"))
+    {
+        using (Html.BeginForm("Add", "Comment", FormMethod.Post, new { role = "form" }))
+        {
+            @Html.Hidden("ArticleId", articleId)
+            @Html.Hidden("AuthorEmail", User.Identity.Name)
+            <div class="form-group">
+                @Html.TextArea("Text", new { @class = "form-control limited-textarea-width", rows = "6", placeholder = "Your comment", required = "" })
+            </div>
+            <input type="submit" class="btn btn-primary" value="Leave a comment" />
+        }
+    }
+    else
+    {
+        <p class="lead text-center">Please, @Html.ActionLink("sign in", "LogIn", "Account") to leave a comment</p>
+    }
+    @foreach (var comment in Model.Items)
+    {
+        <hr />
+        <div>
+            <div class="comment-heading">
+                <div class="pull-left image">
+                    <img src="~/Content/Images/logo.png" class="img-circle comment-avatar" alt="User profile image">
+                </div>
+                <div class="pull-left">
+                    <div class="h5 margin-top">
+                        <a href="@Url.Action("Index","Account", new { id = comment.AuthorId})"><b>@comment.AuthorName</b></a>
+                        made a post.
+                    </div>
+                    <h6>@comment.CreationDate.ToString("MMMM dd, yyyy H:mm", new System.Globalization.CultureInfo("En-GB"))</h6>
+                </div>
+                @if (User.Identity.IsAuthenticated && (Roles.IsUserInRole("Moderator") || User.Identity.Name == comment.AuthorEmail))
+                {
+                    <div class="pull-right">
+                        <a href="@Url.Action("Delete", new { id = comment.Id })" class="btn btn-primary"><i class="glyphicon glyphicon-trash"></i></a>
+                    </div>
+                }
+            </div>
+            <div class="padding">
+                <p>@comment.Text</p>
+            </div>
+        </div>
+    }
+    @if (Model.PagingInfo.TotalPages != 0)
+    {
+        <div class="text-center">
+            <ul class="pagination">
+                @Html.PageLinks(Model.PagingInfo, x => Url.Action("Details", "Article", new { page = x, id = articleId }))
+            </ul>
+        </div>
+    }
+</div>

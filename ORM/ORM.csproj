@@ -70,6 +70,10 @@
     <Compile Include="Migrations\201606131328344_AddCommentTable2.Designer.cs">
       <DependentUpon>201606131328344_AddCommentTable2.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201606140947334_FixedCommentTextType.cs" />
+    <Compile Include="Migrations\201606140947334_FixedCommentTextType.Designer.cs">
+      <DependentUpon>201606140947334_FixedCommentTextType.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -89,6 +93,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201606131328344_AddCommentTable2.resx">
       <DependentUpon>201606131328344_AddCommentTable2.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201606140947334_FixedCommentTextType.resx">
+      <DependentUpon>201606140947334_FixedCommentTextType.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
