@@ -11,7 +11,7 @@ using DAL.Mappers;
 namespace DAL.Repository
 {
     public class Repository<TDal, TOrm> : IRepository<TDal> 
-        where TDal : IEntity 
+        where TDal : class, IEntity 
         where TOrm: class
     {
         protected DbContext Context { get; private set; }
@@ -22,7 +22,7 @@ namespace DAL.Repository
             this.Context = context;
             this.Mapper = mapper;
         }
-        public void Create(TDal entity)
+        public virtual void Create(TDal entity)
         {
             if (entity == null)
                 throw new NullReferenceException(nameof(entity));
@@ -48,7 +48,7 @@ namespace DAL.Repository
         {
             var ormEntity = Context.Set<TOrm>().Find(id);
             if (ormEntity == null)
-                throw new ArgumentException($"The entity with id = {id} doesn't exist");
+                return null;
 
             return Mapper.ToDal(ormEntity);
         }
@@ -56,14 +56,16 @@ namespace DAL.Repository
         public TDal GetByPredicate(Expression<Func<TDal, bool>> predicate)
         {
             var result = Context.Set<TOrm>().Where(predicate.Map<TDal, TOrm, bool>()).FirstOrDefault();
-            if(result == null)
-                throw new ArgumentException($"The entity wasn't found by predicate = {predicate.ToString()}");
+            if (result == null)
+                return null;
 
             return Mapper.ToDal(result); 
         }
 
         public void Update(TDal entity)
         {
+            if (entity == null)
+                throw new ArgumentNullException(nameof(entity));
             var ormEntity = Context.Set<TOrm>().Find(entity.Id);
             if (ormEntity == null)
                 throw new ArgumentException($"The entity with id = {entity.Id} doesn't exist");

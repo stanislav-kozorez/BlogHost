@@ -13,7 +13,7 @@ namespace BLL.Interface.Entities
         public string Email { get; set; }
         public string Password { get; set; }
         public DateTime CreationDate { get; set; }
-        //public virtual Role Role { get; set; }
+        public BllRole Role { get; set; }
         //public virtual ICollection<Article> Articles { get; set; }
     }
 }

@@ -39,16 +39,18 @@ namespace BLL.Services
 
         public BllUser GetUserEntity(string email)
         {
-            return userRepository.GetByPredicate(x => x.Email == email).ToBllUser();
+            return userRepository.GetByPredicate(x => x.Email == email)?.ToBllUser();
         }
 
         public BllUser GetUserEntity(int id)
         {
-            return userRepository.GetById(id).ToBllUser();
+            return userRepository.GetById(id)?.ToBllUser();
         }
 
         public void UpdateUser(BllUser user)
         {
+            if (user == null)
+                throw new ArgumentNullException(nameof(user));
             userRepository.Update(user.ToDalUser());
         }
     }

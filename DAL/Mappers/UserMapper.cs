@@ -1,17 +1,19 @@
 ﻿using DAL.Interface.Entities;
 using DAL.Interface.Mappers;
+using DAL.Interface.Repository;
 using ORM.Entity;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
 
 namespace DAL.Mappers
 {
     public class UserMapper: IMapper<DalUser, User>
-    { 
+    {
+        private IMapper<DalRole, Role> roleMapper;
+
+        public UserMapper(IMapper<DalRole, Role> mapper)
+        {
+            this.roleMapper = mapper;
+        }
+
         public DalUser ToDal(User entity)
         {
             return new DalUser()
@@ -21,6 +23,7 @@ namespace DAL.Mappers
                 Email = entity.Email,
                 Password = entity.Password,
                 CreationDate = entity.CreationDate,
+                Role = roleMapper.ToDal(entity.Role)
             };
         }
 
@@ -32,7 +35,8 @@ namespace DAL.Mappers
                 Name = entity.Name,
                 Email = entity.Email,
                 Password = entity.Password,
-                CreationDate = entity.CreationDate
+                CreationDate = entity.CreationDate,
+                Role = roleMapper.ToOrm(entity.Role)
             };
         }
     }

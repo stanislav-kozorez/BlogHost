@@ -7,71 +7,71 @@ using System.Web.Security;
 using ORM;
 using ORM.Entity;
 using BlogHost.Models;
+using BLL.Interface.Services;
+using BLL.Interface.Entities;
+using System.Web.Mvc;
 
 namespace BlogHost.Providers
 {
     public class CustomMembershipProvider : MembershipProvider
     {
+        public IUserService UserService => System.Web.Mvc.DependencyResolver.Current.GetService<IUserService>();
+        public IRoleService RoleService => System.Web.Mvc.DependencyResolver.Current.GetService<IRoleService>();
         public override bool ValidateUser(string username, string password)
         {
-            using (var context = new BlogHostDbContext())
-            {
-                var user = context.Users.Where(x => x.Email == username).FirstOrDefault();
-           
-                return (user != null && Crypto.VerifyHashedPassword(user.Password, password));
-            }
+            var user = UserService.GetUserEntity(username);
+
+            return (user != null && Crypto.VerifyHashedPassword(user.Password, password));
+            //using (var context = new BlogHostDbContext())
+            //{
+            //    var user = context.Users.Where(x => x.Email == username).FirstOrDefault();
+
+            //    return (user != null && Crypto.VerifyHashedPassword(user.Password, password));
+            //}
         }
 
         public MembershipUser CreateUser(RegistrationViewModel regViewModel)
         {
-            //MembershipUser membershipUser = GetUser(email, false);
-
-            //if (membershipUser != null)
-            //{
-            //    return null;
-            //}
-
-            //var user = new User
-            //{
-            //    Email = email,
-            //    Password = Crypto.HashPassword(password),
-            //    //http://msdn.microsoft.com/ru-ru/library/system.web.helpers.crypto(v=vs.111).aspx
-            //    CreationDate = DateTime.Now
-            //};
-
-            //var role = RoleRepository.GetAllRoles().FirstOrDefault(r => r.Name == "User");
-            //if (role != null)
-            //{
-            //    user.RoleId = role.Id;
-            //}
-
-            //UserRepository.CreateUser(user);
-            //membershipUser = GetUser(email, false);
-            //return membershipUser;
-
-
             MembershipUser membershipUser = GetUser(regViewModel.Email, false);
 
             if (membershipUser != null)
                 return null;
 
-            using (var context = new BlogHostDbContext())
-            {
-                User user = new User();
-                user.Email = regViewModel.Email;
-                user.Password = Crypto.HashPassword(regViewModel.Password);
-                user.CreationDate = DateTime.Now;
-                user.Name = regViewModel.Name;
+            var user = new BllUser();
 
-                var role = context.Roles.FirstOrDefault(x => x.Name == "User");
-                user.Role = role;
+            user.Name = regViewModel.Name;
+            user.Email = regViewModel.Email;
+            user.Password = Crypto.HashPassword(regViewModel.Password);
+            user.CreationDate = DateTime.Now;
 
-                context.Users.Add(user);
-                context.SaveChanges();
-                membershipUser = GetUser(regViewModel.Email, false);
+            var role = RoleService.GetRole("User");
 
-                return membershipUser;
-            }       
+            user.Role = role;
+
+            UserService.CreateUser(user);
+
+            membershipUser = GetUser(user.Email, false);
+
+            return membershipUser;
+
+
+            //using (var context = new BlogHostDbContext())
+            //{
+            //    User user = new User();
+            //    user.Email = regViewModel.Email;
+            //    user.Password = Crypto.HashPassword(regViewModel.Password);
+            //    user.CreationDate = DateTime.Now;
+            //    user.Name = regViewModel.Name;
+
+            //    var role = context.Roles.FirstOrDefault(x => x.Name == "User");
+            //    user.Role = role;
+
+            //    context.Users.Add(user);
+            //    context.SaveChanges();
+            //    membershipUser = GetUser(regViewModel.Email, false);
+
+            //    return membershipUser;
+            //}       
         }
 
         public override MembershipUser GetUser(string email, bool userIsOnline)
@@ -88,16 +88,25 @@ namespace BlogHost.Providers
 
             //return memberUser;
 
+            var user = UserService.GetUserEntity(email);
+            if (user == null)
+                return null;
 
-            using (var context = new BlogHostDbContext())
-            {
-                var user = context.Users.Where(x => x.Email == email).FirstOrDefault();
-                return (user != null) ? new MembershipUser("CustomMembershipProvider", user.Name,
+            return new MembershipUser("CustomMembershipProvider", user.Name,
                     null, user.Email, null, null,
                     false, false, user.CreationDate,
                     DateTime.MinValue, DateTime.MinValue,
-                    DateTime.MinValue, DateTime.MinValue) : null;
-            }
+                    DateTime.MinValue, DateTime.MinValue);
+
+            //using (var context = new BlogHostDbContext())
+            //{
+            //    var user = context.Users.Where(x => x.Email == email).FirstOrDefault();
+            //    return (user != null) ? new MembershipUser("CustomMembershipProvider", user.Name,
+            //        null, user.Email, null, null,
+            //        false, false, user.CreationDate,
+            //        DateTime.MinValue, DateTime.MinValue,
+            //        DateTime.MinValue, DateTime.MinValue) : null;
+            //}
         }
 
         #region Stubs
