@@ -1,8 +1,7 @@
-﻿using BlogHost.Models;
-using ORM;
-using ORM.Entity;
+﻿using BLL.Interface.Entities;
+using BLL.Interface.Services;
+using BlogHost.Models;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Web;
@@ -14,37 +13,44 @@ namespace BlogHost.Controllers
     [Authorize(Roles = "User,Moderator")]
     public class ArticleController : Controller
     {
+        private readonly IArticleService articleService;
+        private readonly IUserService userService;
+
+        public ArticleController(IArticleService articleService, IUserService userService)
+        {
+            this.articleService = articleService;
+            this.userService = userService;
+        }
+
         [AllowAnonymous]
         [ChildActionOnly]
         public ActionResult ForUser(int id, int page = 1)
         {
-            using (var context = new BlogHostDbContext())
+            int pageSize = 3;
+            var model = new EntityListViewModel<ArticleViewModel>();
+            var articles = articleService.GetPagedArticles(page, pageSize, id);
+            var articleViewModel = articles.Select(x => new ArticleViewModel()
             {
-                int pageSize = 3;
-                var model = new EntityListViewModel<ArticleViewModel>();
-                var ormArticles = context.Articles.OrderBy(x => x.CreationDate).Where(x => x.Author.UserId == id).Skip((page - 1) * pageSize).Take(pageSize).ToList();
-                var articleViewModel = ormArticles.Select(x => new ArticleViewModel()
-                {
-                    ArticleId = x.ArticleId,
-                    CreationDate = x.CreationDate,
-                    Title = x.Title,
-                    Text = x.Text
-                });
-                model.Items = articleViewModel;
-                model.PagingInfo = new PagingInfo()
-                {
-                    CurrentPage = page,
-                    ItemsPerPage = pageSize,
-                    TotalItems = context.Articles.Where(x => x.Author.UserId == id).Count()
-                };
-                TempData.Add("PagingInfo",model.PagingInfo);
-                var email = context.Users.Where(x => x.UserId == id).FirstOrDefault().Email;
-                if (email != null)
-                    ViewBag.UserEmail = email;
-                return PartialView("ArticleListPartial", model);
-            }
-        }
+                ArticleId = x.ArticleId,
+                CreationDate = x.CreationDate,
+                Title = x.Title,
+                Text = x.Text
+            });
+            model.Items = articleViewModel;
+            model.PagingInfo = new PagingInfo()
+            {
+                CurrentPage = page,
+                ItemsPerPage = pageSize,
+                TotalItems = articleService.GetArticleCount(id)
+            };
+            TempData.Add("PagingInfo", model.PagingInfo);
+            var user = userService.GetUserEntity(id);
+            if (user != null)
+                ViewBag.UserEmail = user.Email;
+            return PartialView("ArticleListPartial", model);
+    }
 
+        [Authorize(Roles = "User")]
         public ActionResult Create()
         {
             return View();
@@ -53,77 +59,64 @@ namespace BlogHost.Controllers
         [AllowAnonymous]
         public ActionResult Details(int id, int page = 1)
         {
-            using(var context = new BlogHostDbContext())
+            var article = articleService.GetArticle(id);
+            if (article != null)
             {
-                var ormArticle = context.Articles.Find(id);
-                if(ormArticle != null)
-                {
-                    var articleViewModel = new ArticleViewModel();
-                    articleViewModel.ArticleId = ormArticle.ArticleId;
-                    articleViewModel.AuthorId = ormArticle.Author.UserId;
-                    articleViewModel.Tag1 = ormArticle.Tag1;
-                    articleViewModel.Tag2 = ormArticle.Tag2;
-                    articleViewModel.Tag3 = ormArticle.Tag3;
-                    articleViewModel.Title = ormArticle.Title;
-                    articleViewModel.Text = ormArticle.Text;
-                    articleViewModel.CreationDate = ormArticle.CreationDate;
-                    var loggedUser = context.Users.Where(x => x.Email == User.Identity.Name).FirstOrDefault();
-                    ViewBag.LoggedUserId = loggedUser?.UserId;
-                    ViewBag.CurrentPage = page;
+                var loggedUser = userService.GetUserEntity(User.Identity.Name);
+                ViewBag.LoggedUserId = loggedUser?.UserId;
+                ViewBag.CurrentPage = page;
 
-                    return View(articleViewModel);
-                }
+                return View(article);
             }
+
             return RedirectToAction("Index", "Home");
         }
 
         [HttpPost]
         public ActionResult Create(ArticleViewModel model)
-        { 
-            if(ModelState.IsValid)
+        {
+            if (ModelState.IsValid)
             {
-                using (var context = new BlogHostDbContext())
-                {
-                    var user = context.Users.Where(x => x.Email == User.Identity.Name).FirstOrDefault();
+                var user = userService.GetUserEntity(User.Identity.Name);
+                if (user == null)
+                    throw new HttpException(500, "Server error");
 
-                    if (user == null)
-                        return View(model);
+                BllArticle article = new BllArticle();
+                article.Author = user;
+                article.CreationDate = DateTime.Now;
+                article.Title = model.Title;
+                article.Text = EncodeArticleText(model.Text);
+                article.Tag1 = model.Tag1;
+                article.Tag2 = model.Tag2;
+                article.Tag3 = model.Tag3;
 
-                    Article article = new Article();
-                    article.Author = user;
-                    article.CreationDate = DateTime.Now;
-                    article.Title = model.Title;
-                    article.Text = EncodeArticleText(model.Text);
-                    article.Tag1 = model.Tag1;
-                    article.Tag2 = model.Tag2;
-                    article.Tag3 = model.Tag3;
-                    context.Articles.Add(article);
-                    context.SaveChanges();
-                }
-                    return RedirectToAction("Index", "Account");
+                articleService.CreateArticle(article);
+
+                return RedirectToAction("Index", "Account");
             }
             return View(model);
         }
 
         public ActionResult Edit(int? id)
         {
-            if(id == null)
-                return RedirectToAction("Index", "Account");
-            using (var context = new BlogHostDbContext())
+            if (id == null)
+                throw new HttpException(404, "Not found");
+
+            var article = articleService.GetArticle(id.Value);
+            if (article != null && (article.Author.Email == User.Identity.Name || Roles.IsUserInRole("Moderator")))
             {
-                var ormArticle = context.Articles.Find(id.Value);
-                if(ormArticle != null && (ormArticle.Author.Email == User.Identity.Name || Roles.IsUserInRole("Moderator")))
+                var articleViewModel = new ArticleViewModel()
                 {
-                    ArticleViewModel model = new ArticleViewModel();
-                    model.ArticleId = ormArticle.ArticleId;
-                    model.Tag1 = ormArticle.Tag1;
-                    model.Tag2 = ormArticle.Tag2;
-                    model.Tag3 = ormArticle.Tag3;
-                    model.Title = ormArticle.Title;
-                    model.Text = ormArticle.Text;
-                    return View(model);
-                }
+                    ArticleId = article.ArticleId,
+                    Tag1 = article.Tag1,
+                    Tag2 = article.Tag2,
+                    Tag3 = article.Tag3,
+                    Title = article.Title,
+                    Text = article.Text
+                };
+                return View(articleViewModel);
             }
+           
             return RedirectToAction("Index", "Account");
         }
 
@@ -132,20 +125,18 @@ namespace BlogHost.Controllers
         {
             if (ModelState.IsValid)
             {
-                using (var context = new BlogHostDbContext())
+                var article = new BllArticle()
                 {
-                    var ormArticle = context.Articles.Find(articleViewModel.ArticleId);
-                    if(ormArticle != null)
-                    {
-                        ormArticle.Tag1 = articleViewModel.Tag1;
-                        ormArticle.Tag2 = articleViewModel.Tag2;
-                        ormArticle.Tag3 = articleViewModel.Tag3;
-                        ormArticle.Title = articleViewModel.Title;
-                        ormArticle.Text = EncodeArticleText(articleViewModel.Text);
-                        context.SaveChanges();
-                        return RedirectToAction("Index", "Account");
-                    }
-                }
+                    ArticleId = articleViewModel.ArticleId,
+                    Tag1 = articleViewModel.Tag1,
+                    Tag2 = articleViewModel.Tag2,
+                    Tag3 = articleViewModel.Tag3,
+                    Title = articleViewModel.Title,
+                    Text = EncodeArticleText(articleViewModel.Text)
+                };
+                
+                articleService.UpdateArticle(article);
+                return RedirectToAction("Index", "Account");
             }
 
             return View(articleViewModel);
@@ -155,15 +146,11 @@ namespace BlogHost.Controllers
         [ActionName("Delete")]
         public ActionResult DeleteConfirmation(int id)
         {
-            using (var context = new BlogHostDbContext())
+            var article = articleService.GetArticle(id);
+            if (article != null && (article.Author.Email == User.Identity.Name || Roles.IsUserInRole("Moderator")))
             {
-                var ormArticle = context.Articles.Find(id);
-                if (ormArticle != null && (ormArticle.Author.Email == User.Identity.Name || Roles.IsUserInRole("Moderator")))
-                {
-                    var articleViewModel = new ArticleViewModel() { Title = ormArticle.Title, ArticleId = ormArticle.ArticleId };
-                    return View(articleViewModel);
-                }
-
+                var articleViewModel = new ArticleViewModel() { Title = article.Title, ArticleId = article.ArticleId };
+                return View(articleViewModel);
             }
             return RedirectToAction("Index", "Home");
         }
@@ -171,14 +158,8 @@ namespace BlogHost.Controllers
         [HttpPost]
         public ActionResult Delete(int articleId)
         {
-            using (var context = new BlogHostDbContext())
-            {
-                var article = context.Articles.Find(articleId);
-                if (article != null)
-                    context.Articles.Remove(article);
-                context.SaveChanges();
-                return RedirectToAction("Index", "Account");
-            }
+            articleService.DeleteArticle(new BllArticle() { ArticleId = articleId });
+            return RedirectToAction("Index", "Account");
         }
 
         private string EncodeArticleText(string text)

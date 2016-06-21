@@ -20,7 +20,7 @@ namespace BLL.Mappers
                 Email = user.Email,
                 Password = user.Password,
                 CreationDate = user.CreationDate,
-                Role = user.Role.ToDalRole()
+                Role = user.Role?.ToDalRole()
             };
         }
 
@@ -33,7 +33,7 @@ namespace BLL.Mappers
                 Email = user.Email,
                 Password = user.Password,
                 CreationDate = user.CreationDate,
-                Role = user.Role.ToBllRole()
+                Role = user.Role?.ToBllRole()
             };
         }
     }

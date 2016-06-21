@@ -46,6 +46,7 @@ namespace BLL.Services
         public void UpdateArticle(BllArticle article)
         {
             articleRepository.Update(article.ToDalArticle());
+            uow.Commit();
         }
 
         public IEnumerable<BllArticle> GetPagedArticles(int page, int pageSize)
@@ -56,6 +57,16 @@ namespace BLL.Services
         public int GetArticleCount()
         {
             return articleRepository.GetCount();
+        }
+
+        public IEnumerable<BllArticle> GetPagedArticles(int page, int pageSize, int userId)
+        {
+            return articleRepository.GetPagedArticles(page, pageSize, userId).Select(x => x.ToBllArticle());
+        }
+
+        public int GetArticleCount(int userId)
+        {
+            return articleRepository.GetArticleCount(userId);
         }
     }
 }

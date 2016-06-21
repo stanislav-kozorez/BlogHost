@@ -21,7 +21,7 @@ namespace BLL.Mappers
                 Tag3 = article.Tag3,
                 Title = article.Title,
                 Text = article.Text,
-                Author = article.Author.ToDalUser()
+                Author = article.Author?.ToDalUser()
             };
         }
 
@@ -36,7 +36,7 @@ namespace BLL.Mappers
                 Tag3 = article.Tag3,
                 Title = article.Title,
                 Text = article.Text,
-                Author = article.Author.ToBllUser()
+                Author = article.Author?.ToBllUser()
             };
         }
     }

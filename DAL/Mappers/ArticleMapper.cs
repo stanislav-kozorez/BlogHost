@@ -24,7 +24,7 @@ namespace DAL.Mappers
                 Tag3 = entity.Tag3,
                 Title = entity.Title,
                 Text = entity.Text,
-                Author = userMapper.ToDal(entity.Author)
+                Author = entity.Author == null? null : userMapper.ToDal(entity.Author)
             };
         }
 
@@ -39,7 +39,7 @@ namespace DAL.Mappers
                 Tag3 = entity.Tag3,
                 Title = entity.Title,
                 Text = entity.Text,
-                Author = userMapper.ToOrm(entity.Author)
+                Author = entity.Author == null ? null : userMapper.ToOrm(entity.Author)
             };
         }
     }

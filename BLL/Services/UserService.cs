@@ -52,6 +52,7 @@ namespace BLL.Services
             if (user == null)
                 throw new ArgumentNullException(nameof(user));
             userRepository.Update(user.ToDalUser());
+            uow.Commit();
         }
     }
 }

@@ -1,6 +1,6 @@
 ﻿@using BlogHost.Infrastructure
 @using BlogHost.Models
-@model ORM.Entity.User
+@model BLL.Interface.Entities.BllUser
 @{
     ViewBag.Title = "Account";
 }
@@ -29,10 +29,10 @@
 <div class="row bordered">
     <div class="col-md-3">
         <img alt="User Picture" src="~/Content/Images/logo.png" class="img-rounded avatar">
-        @if (User.Identity.IsAuthenticated && User.Identity.Name == Model.Email)
+        @*@if (User.Identity.IsAuthenticated && User.Identity.Name == Model.Email)
         {
             @Html.ActionLink("Change avatar", "index", "Article", new { @class = "btn btn-primary btn-block" })
-        }
+        }*@
     </div>
     <div class="col-md-9">
         <table class="table">

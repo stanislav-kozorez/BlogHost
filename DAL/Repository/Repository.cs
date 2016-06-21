@@ -62,14 +62,13 @@ namespace DAL.Repository
             return Mapper.ToDal(result); 
         }
 
-        public void Update(TDal entity)
+        public virtual void Update(TDal entity)
         {
             if (entity == null)
                 throw new ArgumentNullException(nameof(entity));
             var ormEntity = Context.Set<TOrm>().Find(entity.Id);
             if (ormEntity == null)
                 throw new ArgumentException($"The entity with id = {entity.Id} doesn't exist");
-            /// complete user update
         }
 
         public int GetCount()

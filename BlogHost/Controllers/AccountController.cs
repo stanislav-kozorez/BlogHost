@@ -1,9 +1,7 @@
-﻿using BlogHost.Models;
+﻿using BLL.Interface.Entities;
+using BLL.Interface.Services;
+using BlogHost.Models;
 using BlogHost.Providers;
-using ORM;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using System.Web.Security;
@@ -13,27 +11,31 @@ namespace BlogHost.Controllers
     [AllowAnonymous]
     public class AccountController : Controller
     {
+        private readonly IUserService userService;
+        public AccountController(IUserService userService)
+        {
+            this.userService = userService;
+        }
         public ActionResult Index(int? id, int page = 1)
         {
-            using (var context = new BlogHostDbContext())
+            BllUser user;
+
+            if (id == null)
             {
-                ORM.Entity.User user;
-                if (id == null)
-                {
-                    if (User.Identity.IsAuthenticated)
-                        user = context.Users.Include("Role").Where(x => x.Email == User.Identity.Name).FirstOrDefault();
-                    else
-                        return RedirectToAction("Index", "Home");
-                }
+                if (User.Identity.IsAuthenticated)
+                    user = userService.GetUserEntity(User.Identity.Name);
                 else
-                    user = context.Users.Include("Role").Where(x => x.UserId == id.Value).FirstOrDefault();
-                if (user != null)
-                {
-                    ViewBag.CurrentPage = page;
-                    return View(user);
-                }
-                return RedirectToAction("Index", "Home");
+                    throw new HttpException(404, "Not found");
+
             }
+            else
+                user = userService.GetUserEntity(id.Value);
+            if (user != null)
+            {
+                ViewBag.CurrentPage = page;
+                return View(user);
+            }
+            throw new HttpException(404, "Not found");
         }
 
         [HttpGet]
@@ -54,17 +56,11 @@ namespace BlogHost.Controllers
                     FormsAuthentication.SetAuthCookie(user.Email, false);
                     var username = Membership.GetUser(user.Email).UserName;
                     Session.Add("username", username);
-                    //if (Url.IsLocalUrl(returnUrl))
-                    ///{
-                    //     return Redirect(returnUrl);
-                    //}
-                    // else
-                    // {
+
                     if (Roles.IsUserInRole(user.Email, "Admin"))
                         return RedirectToAction("Index", "User");
                     else
                         return RedirectToAction("Index", "Home");
-                   // }
                 }
                 else
                 {
@@ -85,7 +81,6 @@ namespace BlogHost.Controllers
         [HttpPost]
         public ActionResult Registration(RegistrationViewModel user)
         {
-
             if (ModelState.IsValid)
             {
                 MembershipUser membershipUser = ((CustomMembershipProvider)Membership.Provider).CreateUser(user);

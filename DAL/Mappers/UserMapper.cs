@@ -22,7 +22,7 @@ namespace DAL.Mappers
                 Email = entity.Email,
                 Password = entity.Password,
                 CreationDate = entity.CreationDate,
-                Role = roleMapper.ToDal(entity.Role)
+                Role = entity.Role == null? null : roleMapper.ToDal(entity.Role)
             };
         }
 
@@ -35,7 +35,7 @@ namespace DAL.Mappers
                 Email = entity.Email,
                 Password = entity.Password,
                 CreationDate = entity.CreationDate,
-                Role = roleMapper.ToOrm(entity.Role)
+                Role = entity.Role == null? null : roleMapper.ToOrm(entity.Role)
             };
         }
     }

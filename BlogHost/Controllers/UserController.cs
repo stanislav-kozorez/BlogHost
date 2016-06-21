@@ -13,7 +13,6 @@ namespace BlogHost.Controllers
     [Authorize(Roles = "Admin")]
     public class UserController : Controller
     {
-        // GET: User
         public ActionResult Index(int page = 1)
         {
             using (var context = new BlogHostDbContext())
