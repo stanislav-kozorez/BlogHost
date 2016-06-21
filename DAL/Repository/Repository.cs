@@ -71,5 +71,10 @@ namespace DAL.Repository
                 throw new ArgumentException($"The entity with id = {entity.Id} doesn't exist");
             /// complete user update
         }
+
+        public int GetCount()
+        {
+            return Context.Set<TOrm>().Count();
+        }
     }
 }

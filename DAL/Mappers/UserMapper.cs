@@ -1,6 +1,5 @@
 ﻿using DAL.Interface.Entities;
 using DAL.Interface.Mappers;
-using DAL.Interface.Repository;
 using ORM.Entity;
 
 namespace DAL.Mappers

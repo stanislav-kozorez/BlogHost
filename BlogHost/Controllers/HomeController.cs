@@ -1,39 +1,42 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
+﻿using System.Linq;
 using System.Web.Mvc;
-using ORM;
-using ORM.Entity;
 using BlogHost.Models;
+using BLL.Interface.Services;
 
 namespace BlogHost.Controllers
 {
     public class HomeController : Controller
     {
-        // GET: Home
+        private readonly IArticleService articleService;
+
+        public HomeController(IArticleService articleService)
+        {
+            this.articleService = articleService;
+        }
+
         public ActionResult Index(int page = 1)
         {
-            using (var context = new BlogHostDbContext())
-            {
-                int pageSize = 3;
-                var model = new EntityListViewModel<ArticleViewModel>();
-                var ormArticles = context.Articles.Include("Author").OrderByDescending(x => x.CreationDate).Skip((page - 1) * pageSize).Take(pageSize).ToList();
-                model.Items = ormArticles.Select(
-                    x => new ArticleViewModel() {
+            int pageSize = 3;
+            var model = new EntityListViewModel<ArticleViewModel>();
+            var articles = articleService.GetPagedArticles(page, pageSize);
+            var articleCount = articleService.GetArticleCount();
+
+            model.Items = articles.Select(
+                    x => new ArticleViewModel()
+                    {
                         ArticleId = x.ArticleId,
                         AuthorId = x.Author.UserId,
                         Title = x.Title,
                         Text = x.Text,
-                        CreationDate = x.CreationDate });
-                model.PagingInfo = new PagingInfo()
-                {
-                    CurrentPage = page,
-                    ItemsPerPage = pageSize,
-                    TotalItems = context.Articles.Count()
-                };
-                return View(model);
-            }
+                        CreationDate = x.CreationDate
+                    });
+            model.PagingInfo = new PagingInfo()
+            {
+                CurrentPage = page,
+                ItemsPerPage = pageSize,
+                TotalItems = articleCount
+            };
+            return View(model);
         }
     }
 }

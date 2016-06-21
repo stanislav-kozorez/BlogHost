@@ -21,6 +21,12 @@ namespace BLL.Services
             this.roleRepository = repository;
         }
 
+        public void CreateRole(BllRole role)
+        {
+            roleRepository.Create(role.ToDalRole());
+            uow.Commit();
+        }
+
         public IEnumerable<BllRole> GetAllRoles()
         {
             return roleRepository.GetAll().Select(x => x.ToBllRole());

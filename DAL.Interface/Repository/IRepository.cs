@@ -16,5 +16,6 @@ namespace DAL.Interface.Repository
         void Create(TEntity entity);
         void Delete(TEntity entity);
         void Update(TEntity entity);
+        int GetCount();
     }
 }

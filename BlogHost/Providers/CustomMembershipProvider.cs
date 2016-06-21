@@ -1,11 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
 using System.Web.Helpers;
 using System.Web.Security;
-using ORM;
-using ORM.Entity;
 using BlogHost.Models;
 using BLL.Interface.Services;
 using BLL.Interface.Entities;
@@ -22,12 +17,6 @@ namespace BlogHost.Providers
             var user = UserService.GetUserEntity(username);
 
             return (user != null && Crypto.VerifyHashedPassword(user.Password, password));
-            //using (var context = new BlogHostDbContext())
-            //{
-            //    var user = context.Users.Where(x => x.Email == username).FirstOrDefault();
-
-            //    return (user != null && Crypto.VerifyHashedPassword(user.Password, password));
-            //}
         }
 
         public MembershipUser CreateUser(RegistrationViewModel regViewModel)
@@ -53,41 +42,10 @@ namespace BlogHost.Providers
             membershipUser = GetUser(user.Email, false);
 
             return membershipUser;
-
-
-            //using (var context = new BlogHostDbContext())
-            //{
-            //    User user = new User();
-            //    user.Email = regViewModel.Email;
-            //    user.Password = Crypto.HashPassword(regViewModel.Password);
-            //    user.CreationDate = DateTime.Now;
-            //    user.Name = regViewModel.Name;
-
-            //    var role = context.Roles.FirstOrDefault(x => x.Name == "User");
-            //    user.Role = role;
-
-            //    context.Users.Add(user);
-            //    context.SaveChanges();
-            //    membershipUser = GetUser(regViewModel.Email, false);
-
-            //    return membershipUser;
-            //}       
         }
 
         public override MembershipUser GetUser(string email, bool userIsOnline)
         {
-            //var user = UserRepository.GetUserByEmail(email);
-
-            //if (user == null) return null;
-
-            //var memberUser = new MembershipUser("CustomMembershipProvider", user.Email,
-            //    null, null, null, null,
-            //    false, false, user.CreationDate,
-            //    DateTime.MinValue, DateTime.MinValue,
-            //    DateTime.MinValue, DateTime.MinValue);
-
-            //return memberUser;
-
             var user = UserService.GetUserEntity(email);
             if (user == null)
                 return null;
@@ -97,16 +55,6 @@ namespace BlogHost.Providers
                     false, false, user.CreationDate,
                     DateTime.MinValue, DateTime.MinValue,
                     DateTime.MinValue, DateTime.MinValue);
-
-            //using (var context = new BlogHostDbContext())
-            //{
-            //    var user = context.Users.Where(x => x.Email == email).FirstOrDefault();
-            //    return (user != null) ? new MembershipUser("CustomMembershipProvider", user.Name,
-            //        null, user.Email, null, null,
-            //        false, false, user.CreationDate,
-            //        DateTime.MinValue, DateTime.MinValue,
-            //        DateTime.MinValue, DateTime.MinValue) : null;
-            //}
         }
 
         #region Stubs

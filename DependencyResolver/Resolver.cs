@@ -27,12 +27,15 @@ namespace DependencyResolver
 
             kernel.Bind<IUserRepository>().To<UserRepository>().InRequestScope();
             kernel.Bind<IRoleRepository>().To<RoleRepository>().InRequestScope();
+            kernel.Bind<IArticleRepository>().To<ArticleRepository>().InRequestScope();
 
             kernel.Bind<IMapper<DalUser, User>>().To<UserMapper>().InSingletonScope();
             kernel.Bind<IMapper<DalRole, Role>>().To<RoleMapper>().InSingletonScope();
+            kernel.Bind<IMapper<DalArticle, Article>>().To<ArticleMapper>().InSingletonScope();
 
             kernel.Bind<IUserService>().To<UserService>().InRequestScope();
             kernel.Bind<IRoleService>().To<RoleService>().InRequestScope();
+            kernel.Bind<IArticleService>().To<ArticleService>().InRequestScope();
         }
     }
 }

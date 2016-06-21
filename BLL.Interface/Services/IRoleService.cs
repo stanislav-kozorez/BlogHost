@@ -9,12 +9,9 @@ namespace BLL.Interface.Services
 {
     public interface IRoleService
     {
+        void CreateRole(BllRole role);
         BllRole GetRole(int id);
         BllRole GetRole(string name);
         IEnumerable<BllRole> GetAllRoles();
-
-        //void CreateRole(BllRole user);
-        //void DeleteRole(BllUser user);
-        //void UpdateRole(BllUser user);
     }
 }
