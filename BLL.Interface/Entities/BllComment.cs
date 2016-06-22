@@ -12,5 +12,6 @@ namespace BLL.Interface.Entities
         public string Text { get; set; }
         public DateTime CreationDate { get; set; }
         public BllUser Author { get; set; }
+        public BllArticle Article { get; set; }
     }
 }

@@ -1,9 +1,7 @@
-﻿using BLL.Interface.Services;
+﻿using BLL.Interface.Entities;
+using BLL.Interface.Services;
 using BlogHost.Models;
-using ORM;
-using ORM.Entity;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
@@ -14,10 +12,14 @@ namespace BlogHost.Controllers
     public class CommentController : Controller
     {
         private readonly ICommentService commentService;
+        private readonly IUserService userService;
+        private readonly IArticleService articleService;
 
-        public CommentController(ICommentService commentService)
+        public CommentController(ICommentService commentService, IUserService userService, IArticleService articleService)
         {
             this.commentService = commentService;
+            this.userService = userService;
+            this.articleService = articleService;
         }
 
         [ChildActionOnly]
@@ -53,18 +55,16 @@ namespace BlogHost.Controllers
         {
             if(ModelState.IsValid)
             {
-                using (var context = new BlogHostDbContext())
+
+                var bllComment = new BllComment()
                 {
-                    var ormComment = new Comment()
-                    {
-                        CreationDate = DateTime.Now,
-                        Text = comment.Text,
-                        Author = context.Users.Where(x => x.Email == comment.AuthorEmail).FirstOrDefault(),
-                        Article = context.Articles.Find(comment.ArticleId)
-                    };
-                    context.Comments.Add(ormComment);
-                    context.SaveChanges();
-                }
+                    CreationDate = DateTime.Now,
+                    Text = comment.Text,
+                    Author = userService.GetUserEntity(comment.AuthorEmail),
+                    Article = articleService.GetArticle(comment.ArticleId)
+                };
+
+                commentService.CreateComment(bllComment);
             }
             return RedirectToAction("Index", "Home");
         }
@@ -73,30 +73,23 @@ namespace BlogHost.Controllers
         [ActionName("Delete")]
         public ActionResult DeleteConfirmation(int id)
         {
-            using (var context = new BlogHostDbContext())
+            var comment = commentService.GetComment(id);
+            if (comment != null && (comment.Author.Email == User.Identity.Name || Roles.IsUserInRole("Moderator")))
             {
-                var ormComment = context.Comments.Find(id);
-                if (ormComment != null && (ormComment.Author.Email == User.Identity.Name || Roles.IsUserInRole("Moderator")))
-                {
-                    var commentViewModel = new CommentViewModel() { Id = ormComment.CommentId, Text = ormComment.Text };
-                    return View(commentViewModel);
-                }
-
+                var commentViewModel = new CommentViewModel() { Id = comment.CommentId, Text = comment.Text };
+                return View(commentViewModel);
             }
-            return RedirectToAction("Index", "Home");
+            throw new HttpException(404, "Not found");
         }
 
         [HttpPost]
         public ActionResult Delete(int id)
         {
-            using (var context = new BlogHostDbContext())
-            {
-                var ormComment = context.Comments.Find(id);
-                if (ormComment != null)
-                    context.Comments.Remove(ormComment);
-                context.SaveChanges();
-                return RedirectToAction("Index", "Home");
-            }
+            var comment = commentService.GetComment(id);
+            if (comment != null)
+                commentService.DeleteComment(comment);
+            
+            return RedirectToAction("Index", "Home");
         }
     }
 }

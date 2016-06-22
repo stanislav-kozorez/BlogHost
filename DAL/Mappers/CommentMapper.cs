@@ -12,10 +12,12 @@ namespace DAL.Mappers
     public class CommentMapper : IMapper<DalComment, Comment>
     {
         private readonly IMapper<DalUser, User> userMapper;
+        private readonly IMapper<DalArticle, Article> articleMapper;
 
-        public CommentMapper(IMapper<DalUser, User> mapper)
+        public CommentMapper(IMapper<DalUser, User> userMapper, IMapper<DalArticle, Article> articleMapper)
         {
-            this.userMapper = mapper;
+            this.userMapper = userMapper;
+            this.articleMapper = articleMapper;
         }
 
         public DalComment ToDal(Comment entity)
@@ -25,7 +27,8 @@ namespace DAL.Mappers
                 Id = entity.CommentId,
                 CreationDate = entity.CreationDate,
                 Text = entity.Text,
-                Author = entity.Author == null? null : userMapper.ToDal(entity.Author)
+                Author = entity.Author == null? null : userMapper.ToDal(entity.Author),
+                Article = entity.Article == null? null : articleMapper.ToDal(entity.Article)
             };
         }
 
@@ -36,7 +39,8 @@ namespace DAL.Mappers
                 CommentId = entity.Id,
                 CreationDate = entity.CreationDate,
                 Text = entity.Text,
-                Author = entity.Author == null ? null : userMapper.ToOrm(entity.Author)
+                Author = entity.Author == null ? null : userMapper.ToOrm(entity.Author),
+                Article = entity.Article == null ? null : articleMapper.ToOrm(entity.Article)
             };
         }
     }

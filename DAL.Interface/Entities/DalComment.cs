@@ -12,5 +12,6 @@ namespace DAL.Interface.Entities
         public string Text { get; set; }
         public DateTime CreationDate { get; set; }
         public DalUser Author { get; set; }
+        public DalArticle Article { get; set; }
     }
 }

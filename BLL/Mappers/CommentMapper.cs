@@ -12,7 +12,8 @@ namespace BLL.Mappers
                 Id = comment.CommentId,
                 CreationDate = comment.CreationDate,
                 Text = comment.Text,
-                Author = comment.Author?.ToDalUser()
+                Author = comment.Author?.ToDalUser(),
+                Article = comment.Article?.ToDalArticle()
             };
         }
 
@@ -23,7 +24,8 @@ namespace BLL.Mappers
                 CommentId = comment.Id,
                 CreationDate = comment.CreationDate,
                 Text = comment.Text,
-                Author = comment.Author?.ToBllUser()
+                Author = comment.Author?.ToBllUser(),
+                Article = comment.Article?.ToBllArticle()
             };
         }
     }

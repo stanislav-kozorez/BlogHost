@@ -21,6 +21,11 @@ namespace BLL.Services
             this.uow = uow;
         }
 
+        public BllComment GetComment(int commentId)
+        {
+            return commentRepository.GetById(commentId)?.ToBllComment();
+        }
+
         public void CreateComment(BllComment comment)
         {
             commentRepository.Create(comment.ToDalComment());

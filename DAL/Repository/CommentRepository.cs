@@ -14,6 +14,16 @@ namespace DAL.Repository
         public CommentRepository(DbContext context, IMapper<DalComment, Comment> mapper)
             :base(context, mapper) { }
 
+        public override void Create(DalComment entity)
+        {
+            var comment = Mapper.ToOrm(entity);
+            var article = Context.Set<Article>().Find(entity.Article.Id);
+            var author = Context.Set<User>().Find(entity.Author.Id);
+            comment.Article = article;
+            comment.Author = author;
+            Context.Set<Comment>().Add(comment);
+        }
+
         public int GetCommentCount(int articleId)
         {
             return Context.Set<Comment>().Where(x => x.Article.ArticleId == articleId).Count();

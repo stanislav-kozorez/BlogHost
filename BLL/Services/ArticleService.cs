@@ -68,5 +68,25 @@ namespace BLL.Services
         {
             return articleRepository.GetArticleCount(userId);
         }
+
+        public IEnumerable<BllArticle> FindByKeyword(string keyword, int page, int pageSize)
+        {
+            return articleRepository.FindByKeyword(keyword, page, pageSize).Select(x => x.ToBllArticle());
+        }
+
+        public int FindByKeywordCount(string keyword)
+        {
+            return articleRepository.FindByKeywordCount(keyword);
+        }
+
+        public IEnumerable<BllArticle> FindByTag(string tagName, int page, int pageSize)
+        {
+            return articleRepository.FindByTag(tagName, page, pageSize).Select(x => x.ToBllArticle());
+        }
+
+        public int FindByTagCount(string tagName)
+        {
+            return articleRepository.FindByTagCount(tagName);
+        }
     }
 }
