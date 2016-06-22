@@ -16,6 +16,5 @@ namespace BLL.Interface.Entities
         public string Tag2 { get; set; }
         public string Tag3 { get; set; }
         public BllUser Author { get; set; }
-        //public virtual ICollection<Comment> Comments { get; set; }
     }
 }

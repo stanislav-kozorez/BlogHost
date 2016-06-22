@@ -1,4 +1,5 @@
-﻿using BlogHost.Models;
+﻿using BLL.Interface.Services;
+using BlogHost.Models;
 using ORM;
 using ORM.Entity;
 using System;
@@ -12,35 +13,40 @@ namespace BlogHost.Controllers
 {
     public class CommentController : Controller
     {
+        private readonly ICommentService commentService;
+
+        public CommentController(ICommentService commentService)
+        {
+            this.commentService = commentService;
+        }
+
         [ChildActionOnly]
         public ActionResult Index(int articleId, int page = 1)
         {
-            using (var context = new BlogHostDbContext())
-            {
-                int pageSize = 3;
-                var model = new EntityListViewModel<CommentViewModel>();
-                var ormComments = context.Comments.Include("Author").OrderByDescending(x => x.CreationDate).Where(x => x.Article.ArticleId == articleId).Skip((page - 1) * pageSize).Take(pageSize).ToList();
-                var commentViewModel = ormComments.Select(x => new CommentViewModel()
-                {
-                    AuthorId = x.Author.UserId,
-                    AuthorName = x.Author.Name,
-                    AuthorEmail = x.Author.Email,
-                    CreationDate = x.CreationDate,
-                    Id = x.CommentId,
-                    Text = x.Text
-                });
-                model.Items = commentViewModel;
-                model.PagingInfo = new PagingInfo()
-                {
-                    CurrentPage = page,
-                    ItemsPerPage = pageSize,
-                    TotalItems = context.Comments.Where(x => x.Article.ArticleId == articleId).Count()
-                };
+            int pageSize = 3;
+            var model = new EntityListViewModel<CommentViewModel>();
+            var comments = commentService.GetPagedComments(page, pageSize, articleId);
 
-                ViewBag.ArticleId = articleId;
-                
-                return PartialView("CommentsPartial", model);
-            }
+            var commentViewModel = comments.Select(x => new CommentViewModel()
+            {
+                AuthorId = x.Author.UserId,
+                AuthorName = x.Author.Name,
+                AuthorEmail = x.Author.Email,
+                CreationDate = x.CreationDate,
+                Id = x.CommentId,
+                Text = x.Text
+            });
+            model.Items = commentViewModel;
+            model.PagingInfo = new PagingInfo()
+            {
+                CurrentPage = page,
+                ItemsPerPage = pageSize,
+                TotalItems = commentService.GetCommentCount(articleId)
+            };
+
+            ViewBag.ArticleId = articleId;
+
+            return PartialView("CommentsPartial", model);
         }
 
         public ActionResult Add(CommentViewModel comment)

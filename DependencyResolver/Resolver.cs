@@ -9,12 +9,7 @@ using Ninject;
 using Ninject.Web.Common;
 using ORM;
 using ORM.Entity;
-using System;
-using System.Collections.Generic;
 using System.Data.Entity;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DependencyResolver
 {
@@ -28,14 +23,17 @@ namespace DependencyResolver
             kernel.Bind<IUserRepository>().To<UserRepository>().InRequestScope();
             kernel.Bind<IRoleRepository>().To<RoleRepository>().InRequestScope();
             kernel.Bind<IArticleRepository>().To<ArticleRepository>().InRequestScope();
+            kernel.Bind<ICommentRepository>().To<CommentRepository>().InRequestScope();
 
             kernel.Bind<IMapper<DalUser, User>>().To<UserMapper>().InSingletonScope();
             kernel.Bind<IMapper<DalRole, Role>>().To<RoleMapper>().InSingletonScope();
             kernel.Bind<IMapper<DalArticle, Article>>().To<ArticleMapper>().InSingletonScope();
+            kernel.Bind<IMapper<DalComment, Comment>>().To<CommentMapper>().InSingletonScope();
 
             kernel.Bind<IUserService>().To<UserService>().InRequestScope();
             kernel.Bind<IRoleService>().To<RoleService>().InRequestScope();
             kernel.Bind<IArticleService>().To<ArticleService>().InRequestScope();
+            kernel.Bind<ICommentService>().To<CommentService>().InRequestScope();
         }
     }
 }

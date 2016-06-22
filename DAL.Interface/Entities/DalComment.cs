@@ -6,15 +6,11 @@ using System.Threading.Tasks;
 
 namespace DAL.Interface.Entities
 {
-    public class DalArticle : IEntity
+    public class DalComment: IEntity
     {
         public int Id { get; set; }
-        public string Title { get; set; }
-        public DateTime CreationDate { get; set; }
         public string Text { get; set; }
-        public string Tag1 { get; set; }
-        public string Tag2 { get; set; }
-        public string Tag3 { get; set; }
+        public DateTime CreationDate { get; set; }
         public DalUser Author { get; set; }
     }
 }
