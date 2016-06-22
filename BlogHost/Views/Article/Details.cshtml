@@ -31,6 +31,7 @@
                 <li><a class="btn btn-default" href="@Url.Action("ByTagName", "Search", new { tagName = Model.Tag3 })"><i class="glyphicon glyphicon-tag"></i> @Model.Tag3</a></li>
             }
         </ul>
+        <h5>Author: <a href="@Url.Action("Index","Account", new { id = Model.Author.UserId})"><b>@Model.Author.Name</b></a></h5>
         <h5>Publication date: @Model.CreationDate.ToString("MMMM dd, yyyy H:mm", new System.Globalization.CultureInfo("En-GB"))</h5>
     </div>
     <hr />

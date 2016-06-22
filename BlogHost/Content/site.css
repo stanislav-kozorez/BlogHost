@@ -10,7 +10,6 @@ body{
     background-attachment: fixed;
     background-repeat: no-repeat;
     background-size: cover;
-    /*color:#fff;*/
 }
 
 .bordered{
@@ -45,6 +44,7 @@ footer p {
 
 .field-validation-error {
     color: #f00;
+    display: block;
 }
 
 .input-validation-error {

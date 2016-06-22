@@ -28,6 +28,9 @@
                 @Html.ValidationMessageFor(x => x.RepeatPassword)
                 @Html.TextBoxFor(x => x.RepeatPassword, new { placeholder = "Repeat password", @class = "form-control", type = "password" })
             </div>
+            <div class="text-center">
+                @Html.ValidationMessage("registration")
+            </div>
             <button class="btn btn-block btn-success" type="submit">Register me</button>
         }
     </div>

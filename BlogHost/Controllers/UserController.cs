@@ -1,56 +1,61 @@
-﻿using System.Linq;
-using System.Web.Mvc;
-using ORM.Entity;
-using ORM;
+﻿using System.Web.Mvc;
 using BlogHost.Models;
 using System.Web.Helpers;
+using BLL.Interface.Services;
+using BLL.Interface.Entities;
+using System.Web;
 
 namespace BlogHost.Controllers
 {
     [Authorize(Roles = "Admin")]
     public class UserController : Controller
     {
+        private readonly IUserService userService;
+        private readonly IRoleService roleService;
+
+        public UserController(IUserService userService, IRoleService roleService)
+        {
+            this.userService = userService;
+            this.roleService = roleService;
+        }
+
         public ActionResult Index(int page = 1)
         {
-            using (var context = new BlogHostDbContext())
+            int pageSize = 3;
+
+            var model = new EntityListViewModel<BllUser>();
+            var users = userService.GetPagedUsers(page, pageSize);
+            
+            model.Items = users;
+            model.PagingInfo = new PagingInfo()
             {
-                int pageSize = 3;
-                var model = new EntityListViewModel<User>();
-                var ormUsers = context.Users.Include("Role").OrderBy(x => x.UserId).Skip((page - 1) * pageSize).Take(pageSize).ToList();
-                //List<User> users = context.Users.Include("Role").ToList();
-                model.Items = ormUsers;
-                model.PagingInfo = new PagingInfo()
-                {
-                    CurrentPage = page,
-                    ItemsPerPage = pageSize,
-                    TotalItems = context.Users.Count()
-                };
-                return View(model);
-            }
+                CurrentPage = page,
+                ItemsPerPage = pageSize,
+                TotalItems = userService.GetUserCount()
+            };
+            return View(model);
         }
 
         public ActionResult Edit(int? id)
         {
             if (id == null)
-                return RedirectToAction("Index");
-            using (var context = new BlogHostDbContext())
-            {
-                var ormUser = context.Users.Find(id);
-                if (ormUser != null)
-                {
-                    if (ormUser.Email == User.Identity.Name)
-                        return RedirectToAction("Index");
-                    var editUser = new UserEditViewModel();
-                    editUser.UserId = ormUser.UserId;
-                    editUser.Name = ormUser.Name;
-                    editUser.Email = ormUser.Email;
-                    editUser.RoleId = ormUser.Role.RoleId;
-                    editUser.Roles = new SelectList(context.Roles.ToList(), "RoleId", "Name");
+                throw new HttpException(404, "Not found");
 
-                    return View(editUser);
-                }
+            var user = userService.GetUserEntity(id.Value);
+            if (user != null)
+            {
+                if (user.Email == User.Identity.Name)
+                    throw new HttpException(404, "Not found");
+                var editUser = new UserEditViewModel();
+                editUser.UserId = user.UserId;
+                editUser.Name = user.Name;
+                editUser.Email = user.Email;
+                editUser.RoleId = user.Role.RoleId;
+                editUser.Roles = new SelectList(roleService.GetAllRoles(), "RoleId", "Name");
+
+                return View(editUser);
             }
-            return RedirectToAction("Index");
+            throw new HttpException(404, "Not found");
         }
 
         [HttpPost]
@@ -58,52 +63,48 @@ namespace BlogHost.Controllers
         {
             if (ModelState.IsValid)
             {
-                using (var context = new BlogHostDbContext())
+                var user = userService.GetUserEntity(editUser.UserId);
+                if(user != null)
                 {
-                    var ormUser = context.Users.Find(editUser.UserId);
-                    if (ormUser != null)
-                    {
-                        ormUser.Name = editUser.Name;
-                        if (editUser.Password != null && !Crypto.VerifyHashedPassword(ormUser.Password, editUser.Password))
-                            ormUser.Password = Crypto.HashPassword(editUser.Password);
-                        ormUser.Role = context.Roles.Find(editUser.RoleId);
-                        context.SaveChanges();
-                        return RedirectToAction("Index");
-                    }
+                    user.Name = editUser.Name;
+                    if (editUser.Password != null && !Crypto.VerifyHashedPassword(user.Password, editUser.Password))
+                        user.Password = Crypto.HashPassword(editUser.Password);
+                    user.Role = roleService.GetRole(editUser.RoleId);
+                    userService.UpdateUser(user);
+
+                    return RedirectToAction("Index");
                 }
+                throw new HttpException(404, "Not Found");
             }
+            editUser.Roles = new SelectList(roleService.GetAllRoles(), "RoleId", "Name");
             return View(editUser);
         }
 
         [ActionName("Delete")]
         public ActionResult ConfirmUserDelete(int id)
         {
-            using (var context = new BlogHostDbContext())
-            {
-                var ormUser = context.Users.Find(id);
-                if (ormUser != null)
-                {
-                    if (ormUser.Email == User.Identity.Name)
-                        return RedirectToAction("Index");
-                    var deleteUser = new UserDeleteViewModel() { Email = ormUser.Email, UserId = ormUser.UserId };
-                    return View(deleteUser);
-                }
+            var user = userService.GetUserEntity(id);
 
+            if (user != null)
+            {
+                if (user.Email == User.Identity.Name)
+                    throw new HttpException(404, "Not found");
+                var deleteUser = new UserDeleteViewModel() { Email = user.Email, UserId = user.UserId };
+                return View(deleteUser);
             }
-            return RedirectToAction("Index");
+            throw new HttpException(404, "Not foud");
         }
 
         [HttpPost]
         public ActionResult Delete(int userId)
         {
-            using (var context = new BlogHostDbContext())
+            var user = userService.GetUserEntity(userId);
+            if (user != null)
             {
-                var user = context.Users.Find(userId);
-                if (user != null)
-                    context.Users.Remove(user);
-                context.SaveChanges();
+                userService.DeleteUser(user);
                 return RedirectToAction("Index");
             }
+            throw new HttpException(404, "Not found");
         }
     }
 }

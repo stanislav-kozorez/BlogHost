@@ -92,7 +92,7 @@ namespace BlogHost.Controllers
                 }
                 else
                 {
-                    ModelState.AddModelError("", "Something bad happened during your registration. Please, try later.");
+                    ModelState.AddModelError("registration", $"User with email \"{user.Email}\" already exists.");
                 }
             }
             return View(user);

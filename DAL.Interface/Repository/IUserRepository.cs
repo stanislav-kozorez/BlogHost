@@ -9,5 +9,6 @@ namespace DAL.Interface.Repository
 {
     public interface IUserRepository: IRepository<DalUser>
     {
+        IEnumerable<DalUser> GetPagedUsers(int page, int pageSize);
     }
 }

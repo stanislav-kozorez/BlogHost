@@ -14,10 +14,12 @@
             <h2 class="text-center">Edit @Model.Name's data</h2>
             <div class="form-group">
                 @Html.Label("Name")
+                @Html.ValidationMessageFor(x => x.Name)
                 @Html.TextBoxFor(x => x.Name, new { @class = "form-control" })
             </div>
             <div class="form-group">
                 @Html.Label("Role")
+                @Html.ValidationMessageFor(x => x.RoleId)
                 @Html.DropDownListFor(x => x.RoleId, Model.Roles, new { @class = "form-control" })
             </div>
             <div class="form-group">

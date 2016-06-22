@@ -278,10 +278,6 @@
       <Project>{6138d4d7-db84-43a2-9bd8-4b99c92c9877}</Project>
       <Name>DependencyResolver</Name>
     </ProjectReference>
-    <ProjectReference Include="..\ORM\ORM.csproj">
-      <Project>{762cc562-d683-489f-b970-5fcf6be1a242}</Project>
-      <Name>ORM</Name>
-    </ProjectReference>
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

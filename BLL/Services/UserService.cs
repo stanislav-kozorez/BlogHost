@@ -2,8 +2,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using BLL.Interface.Entities;
 using DAL.Interface.Repository;
 using BLL.Mappers;
@@ -35,6 +33,16 @@ namespace BLL.Services
         public IEnumerable<BllUser> GetAllUserEntities()
         {
             return userRepository.GetAll().Select(x => x.ToBllUser());
+        }
+
+        public IEnumerable<BllUser> GetPagedUsers(int page, int pageSize)
+        {
+            return userRepository.GetPagedUsers(page, pageSize).Select(x => x.ToBllUser());
+        }
+
+        public int GetUserCount()
+        {
+            return userRepository.GetCount();
         }
 
         public BllUser GetUserEntity(string email)

@@ -11,9 +11,12 @@ namespace BlogHost.Models
     {
         public int ArticleId { get; set; }
         public int AuthorId { get; set; }
+        [Required(ErrorMessage = "Title is required")]
         public string Title { get; set; }
         [AllowHtml]
+        [Required(ErrorMessage = "Text is required")]
         public string Text { get; set; }
+        [Required(ErrorMessage = "First tag is required")]
         public string Tag1 { get; set; }
         public string Tag2 { get; set; }
         public string Tag3 { get; set; }

@@ -12,7 +12,8 @@ namespace BLL.Interface.Services
         BllUser GetUserEntity(int id);
         BllUser GetUserEntity(string email);
         IEnumerable<BllUser> GetAllUserEntities();
-
+        IEnumerable<BllUser> GetPagedUsers(int page, int pageSize);
+        int GetUserCount();
         void CreateUser(BllUser user);
         void DeleteUser(BllUser user);
         void UpdateUser(BllUser user);

@@ -20,6 +20,9 @@
                 @Html.ValidationMessageFor(x => x.Password)
                 @Html.TextBoxFor(x => x.Password, new { type = "password", placeholder = "Password", @class = "form-control"})
             </div>
+            <div class="text-center">
+                @Html.ValidationMessage("login")
+            </div>
             <button class="btn btn-block btn-success" type="submit">Log in</button>
         }
     </div>

@@ -8,6 +8,7 @@
         <h2 class="text-center">Create new article</h2>
         <div class="form-group">
             @Html.Label("First tag:")
+            @Html.ValidationMessageFor(x => x.Tag1)
             @Html.TextBoxFor(x => x.Tag1, new { placeholder = "Tag name (required)",@class = "form-control" })
         </div>
         <div class="form-group">
@@ -20,10 +21,12 @@
         </div>
         <div class="form-group">
             @Html.Label("Article title:")
+            @Html.ValidationMessageFor(x => x.Title)
             @Html.TextBoxFor( x => x.Title, new { placeholder = "Article title", @class = "form-control" })
         </div>
         <div class="form-group">
             @Html.Label("Article text:")
+            @Html.ValidationMessageFor(x => x.Text)
             @Html.TextAreaFor(x => x.Text, new { placeholder = "Write text here", @class = "form-control limited-textarea-width", rows = "10" })
         </div>
         <input type="submit" class="btn btn-primary" value="Create" />
