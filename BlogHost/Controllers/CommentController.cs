@@ -66,7 +66,9 @@ namespace BlogHost.Controllers
 
                 commentService.CreateComment(bllComment);
             }
-            return RedirectToAction("Index", "Home");
+            if (Request.IsAjaxRequest())
+                return Index(comment.ArticleId);
+            return RedirectToAction("Details", "Article", new { id = comment.ArticleId });
         }
 
         [HttpGet]

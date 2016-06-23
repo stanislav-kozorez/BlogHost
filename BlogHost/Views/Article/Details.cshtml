@@ -37,4 +37,6 @@
     <hr />
     <p class="lead text-wrap text-left">@Html.Raw(Model.Text)</p>
 </div>
-@Html.Action("Index", "Comment", new { articleId = Model.ArticleId, page = ViewBag.CurrentPage })
+<div id="comments">
+    @Html.Action("Index", "Comment", new { articleId = Model.ArticleId, page = ViewBag.CurrentPage })
+</div>

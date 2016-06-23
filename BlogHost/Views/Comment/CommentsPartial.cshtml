@@ -8,13 +8,13 @@
     <h3 class="text-center">Total comments: @Model.PagingInfo.TotalItems</h3>
     @if (User.Identity.IsAuthenticated && !User.IsInRole("Admin"))
     {
-        using (Html.BeginForm("Add", "Comment", FormMethod.Post, new { role = "form" }))
+        using (Ajax.BeginForm("Add", "Comment", null, new AjaxOptions() { UpdateTargetId = "comments", Url = Url.Action("Add", "Comment"), OnSuccess = "OnSuccess"}, new { role = "form" }))
         {
             @Html.Hidden("ArticleId", articleId)
             @Html.Hidden("AuthorEmail", User.Identity.Name)
             @Html.ValidationMessage("Text")
             <div class="form-group">
-                @Html.TextArea("Text", new { @class = "form-control limited-textarea-width", rows = "6", placeholder = "Your comment", required = "" })
+                @Html.TextArea("Text", new { @class = "form-control limited-textarea-width", rows = "6", placeholder = "Your comment", required = "", id = "comment-text-area" })
             </div>
             <input type="submit" class="btn btn-primary" value="Leave a comment" />
         }
@@ -59,3 +59,10 @@
         </div>
     }
 </div>
+
+<script type="text/javascript">
+    function OnSuccess() {
+        var target = document.getElementById("comment-text-area");
+        target.value = "";
+    }
+</script>
