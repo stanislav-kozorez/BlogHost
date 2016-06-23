@@ -18,7 +18,6 @@
                 @if (User.Identity.IsAuthenticated)
                 {
                     <li><a href="/Account">My account</a></li>
-                    @*<li>@Html.ActionLink("My account", "Index", "Account")</li>*@
                     if (Roles.IsUserInRole("Admin"))
                     {
                         <li>@Html.ActionLink("User administration", "Index","User", null, new { @class = "active"})</li>
@@ -66,6 +65,7 @@
         </div>
     </footer>
     @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/jqueryval")
     @Scripts.Render("~/bundles/bootstrap")
     @RenderSection("scripts", required: false)
 </body>

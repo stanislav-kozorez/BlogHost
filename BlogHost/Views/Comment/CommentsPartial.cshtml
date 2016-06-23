@@ -12,6 +12,7 @@
         {
             @Html.Hidden("ArticleId", articleId)
             @Html.Hidden("AuthorEmail", User.Identity.Name)
+            @Html.ValidationMessage("Text")
             <div class="form-group">
                 @Html.TextArea("Text", new { @class = "form-control limited-textarea-width", rows = "6", placeholder = "Your comment", required = "" })
             </div>
