@@ -10,6 +10,7 @@ body{
     background-attachment: fixed;
     background-repeat: no-repeat;
     background-size: cover;
+    color: #ffe8a9;
 }
 
 .bordered{
@@ -84,8 +85,12 @@ table{
     border-top-right-radius: 3px;
 }
 
-.dark-gray {
+.white-background {
     background-color: #fff;
+}
+
+.black-color {
+    color: #222;
 }
 
 .limited-textarea-width {

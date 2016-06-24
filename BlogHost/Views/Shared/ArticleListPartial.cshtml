@@ -36,7 +36,7 @@
                     </div>
                 </div>
             </div>
-            <div class="panel-body text-wrap">
+            <div class="panel-body text-wrap black-color">
                 @if (article.Text.Length > 200)
                 {
                     <p>@(Html.Raw(article.Text.Substring(0, 200)))...</p>
@@ -46,7 +46,7 @@
                     <p>@Html.Raw(article.Text)</p>
                 }
             </div>
-            <div class="panel-footer dark-gray">
+            <div class="panel-footer white-background black-color">
                 <div class="row">
                     <div class="col-md-6 col-sm-6">
                         <h5>Publication date: @article.CreationDate.ToString("MMMM dd, yyyy H:mm", new System.Globalization.CultureInfo("En-GB"))</h5>

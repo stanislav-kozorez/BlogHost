@@ -5,7 +5,7 @@
     ViewBag.Title = "Account";
 }
 
-<div class="row dark-background">
+@*<div class="row dark-background">
     <div class="col-md-6 col-sm-6">
         <h2>Blog: @Model.Email</h2>
     </div>
@@ -24,9 +24,31 @@
         </div>
         }
     </div>
-</div>    
+</div>*@    
 
 <div class="row bordered">
+
+    <div class="row">
+        <div class="col-md-6 col-sm-6">
+            <h2>Blog: @Model.Email</h2>
+        </div>
+        <div class="col-md-6 col-sm-6">
+            @if (User.Identity.IsAuthenticated && Roles.IsUserInRole("Admin") && Model.Email != User.Identity.Name)
+            {
+                <div class="dropdown pull-right">
+                    <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">
+                        Administration
+                        <span class="caret"></span>
+                    </button>
+                    <ul class="dropdown-menu">
+                        <li><a href="@Url.Action("Edit", "User", new { id = Model.UserId })" id="@Model.UserId">Edit user</a></li>
+                        <li><a href="@Url.Action("Delete", "User", new { id = Model.UserId })" id="@Model.UserId">Delete user</a></li>
+                    </ul>
+                </div>
+            }
+        </div>
+    </div>
+    <hr />
     <div class="col-md-3">
         <img alt="User Picture" src="~/Content/Images/logo.png" class="img-rounded avatar">
         @*@if (User.Identity.IsAuthenticated && User.Identity.Name == Model.Email)
@@ -35,7 +57,7 @@
         }*@
     </div>
     <div class="col-md-9">
-        <table class="table">
+        <table class="table black-color">
             <tbody>
                 <tr>
                     <td>User name:</td>

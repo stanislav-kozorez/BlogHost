@@ -78,20 +78,20 @@ namespace BlogHost.Controllers
             var comment = commentService.GetComment(id);
             if (comment != null && (comment.Author.Email == User.Identity.Name || Roles.IsUserInRole("Moderator")))
             {
-                var commentViewModel = new CommentViewModel() { Id = comment.CommentId, Text = comment.Text };
+                var commentViewModel = new CommentViewModel() { Id = comment.CommentId, Text = comment.Text, ArticleId = comment.Article.ArticleId };
                 return View(commentViewModel);
             }
             throw new HttpException(404, "Not found");
         }
 
         [HttpPost]
-        public ActionResult Delete(int id)
+        public ActionResult Delete(int id, int articleId)
         {
             var comment = commentService.GetComment(id);
             if (comment != null)
                 commentService.DeleteComment(comment);
             
-            return RedirectToAction("Index", "Home");
+            return RedirectToAction("Details", "Article", new { id = articleId });
         }
     }
 }

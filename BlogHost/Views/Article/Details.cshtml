@@ -2,22 +2,22 @@
 @{ 
     int? loggedUserId = ViewBag.LoggedUserId;
 }
-
-<div class="row dark-background text-wrap">
-    <div class="col-md-10 col-sm-10">
-        <h2>@Model.Title</h2>
-    </div>
-    <div class="col-md-2 col-sm-2">
-        @if (User.Identity.IsAuthenticated && (Roles.IsUserInRole("Moderator") || Model.Author.UserId == loggedUserId.Value))
-        {
-            <ul class="list-inline pull-right">
-                <li><a href="@Url.Action("Edit", new { id = Model.ArticleId })" class="btn btn-primary"><i class="glyphicon glyphicon-wrench"></i></a></li>
-                <li><a href="@Url.Action("Delete", new { id = Model.ArticleId })" class="btn btn-primary"><i class="glyphicon glyphicon-trash"></i></a></li>
-            </ul>
-        }
-    </div>
-</div>    
 <div class="row bordered">
+    <div class="row text-wrap">
+        <div class="col-md-10 col-sm-10">
+            <h2>@Model.Title</h2>
+        </div>
+        <div class="col-md-2 col-sm-2">
+            @if (User.Identity.IsAuthenticated && (Roles.IsUserInRole("Moderator") || Model.Author.UserId == loggedUserId.Value))
+            {
+                <ul class="list-inline pull-right">
+                    <li><a href="@Url.Action("Edit", new { id = Model.ArticleId })" class="btn btn-primary"><i class="glyphicon glyphicon-wrench"></i></a></li>
+                    <li><a href="@Url.Action("Delete", new { id = Model.ArticleId })" class="btn btn-primary"><i class="glyphicon glyphicon-trash"></i></a></li>
+                </ul>
+            }
+        </div>
+    </div>
+    <hr />
     <div>
         <ul class="list-inline">
             <li><i class="glyphicon glyphicon-tags"></i> Tags:</li>

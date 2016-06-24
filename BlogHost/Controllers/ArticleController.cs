@@ -165,14 +165,14 @@ namespace BlogHost.Controllers
         private string EncodeArticleText(string text)
         {
             StringBuilder sb = new StringBuilder(HttpUtility.HtmlEncode(text));
-            //<b>,<i>,<br>,<pre>
+            //<b>,<i>,<br>
             sb.Replace("&lt;b&gt;", "<b>");
             sb.Replace("&lt;/b&gt;", "</b>");
             sb.Replace("&lt;i&gt;", "<i>");
             sb.Replace("&lt;/i&gt;", "</i>");
             sb.Replace("&lt;br&gt;", "<br>");
-            sb.Replace("&lt;pre&gt;", "<pre>");
-            sb.Replace("&lt;/pre&gt;", "</pre>");
+            //sb.Replace("&lt;pre&gt;", "<pre>");
+            //sb.Replace("&lt;/pre&gt;", "</pre>");
             return sb.ToString();
         }
     }
